@@ -13,6 +13,75 @@
  * writing app.js a little simpler to work with.
  */
 
+// Global variables
+const CANVAS_WIDTH = 501;
+const CANVAS_HEIGHT = [600, 1050, 1380];
+
+// Levels data
+const LEVEL_DATA = {
+  FIRST_LEVEL: {
+    ROW_IMAGES: [
+      "images/water-block.png",
+      "images/stone-block.png",
+      "images/stone-block.png",
+      "images/stone-block.png",
+      "images/grass-block.png",
+      "images/grass-block.png",
+    ],
+    NUM_ROWS: 6,
+    NUM_COLS: 5,
+  },
+  SIXTH_LEVEL: {
+    ROW_IMAGES: [
+      "images/water-block.png",
+      "images/stone-block.png",
+      "images/stone-block.png",
+      "images/stone-block.png",
+      "images/stone-block.png",
+      "images/grass-block.png",
+    ],
+    NUM_ROWS: 6,
+    NUM_COLS: 5,
+  },
+  ELEVENTH_LEVEL: {
+    ROW_IMAGES: [
+      "images/water-block.png",
+      "images/stone-block.png",
+      "images/stone-block.png",
+      "images/stone-block.png",
+      "images/grass-block.png",
+      "images/stone-block.png",
+      "images/stone-block.png",
+      "images/stone-block.png",
+      "images/stone-block.png",
+      "images/grass-block.png",
+    ],
+    NUM_ROWS: 10,
+    NUM_COLS: 5,
+  },
+  SIXTEENTH_LEVEL: {
+    ROW_IMAGES: [
+      "images/water-block.png",
+      "images/stone-block.png",
+      "images/stone-block.png",
+      "images/stone-block.png",
+      "images/grass-block.png",
+      "images/stone-block.png",
+      "images/stone-block.png",
+      "images/stone-block.png",
+      "images/grass-block.png",
+      "images/stone-block.png",
+      "images/stone-block.png",
+      "images/stone-block.png",
+      "images/stone-block.png",
+      "images/grass-block.png",
+    ],
+    NUM_ROWS: 14,
+    NUM_COLS: 5,
+  },
+};
+
+// Engine code
 var Engine = function (global) {
   /* Predefine the variables we'll be using within this scope,
    * create the canvas element, grab the 2D context for that canvas
@@ -23,9 +92,6 @@ var Engine = function (global) {
     canvas = doc.createElement("canvas"),
     ctx = canvas.getContext("2d"),
     lastTime;
-
-  canvas.width = 501;
-  canvas.height = 600;
 
   canvas.setAttribute("class", "canvas");
   doc.body.appendChild(canvas);
@@ -108,18 +174,42 @@ var Engine = function (global) {
     /* This array holds the relative URL to the image used
      * for that particular row of the game level.
      */
-    var rowImages = [
-        "images/water-block.png", // Top row is water
-        "images/stone-block.png", // Row 1 of 3 of stone
-        "images/stone-block.png", // Row 2 of 3 of stone
-        "images/stone-block.png", // Row 3 of 3 of stone
-        "images/grass-block.png", // Row 1 of 2 of grass
-        "images/grass-block.png", // Row 2 of 2 of grass
-      ],
-      numRows = 6,
-      numCols = 5,
-      row,
-      col;
+
+    // Engine variables
+    let rowImages;
+    let numRows;
+    let numCols;
+    let row;
+    let col;
+
+    // Levels constructor
+    if (level > 0 && level <= 5) {
+      rowImages = LEVEL_DATA.FIRST_LEVEL.ROW_IMAGES;
+      numRows = LEVEL_DATA.FIRST_LEVEL.NUM_ROWS;
+      numCols = LEVEL_DATA.FIRST_LEVEL.NUM_COLS;
+    } else if (level >= 6 && level <= 10) {
+      rowImages = LEVEL_DATA.SIXTH_LEVEL.ROW_IMAGES;
+      numRows = LEVEL_DATA.SIXTH_LEVEL.NUM_ROWS;
+      numCols = LEVEL_DATA.SIXTH_LEVEL.NUM_COLS;
+    } else if (level >= 11 && level <= 15) {
+      rowImages = LEVEL_DATA.ELEVENTH_LEVEL.ROW_IMAGES;
+      numRows = LEVEL_DATA.ELEVENTH_LEVEL.NUM_ROWS;
+      numCols = LEVEL_DATA.ELEVENTH_LEVEL.NUM_COLS;
+    } else {
+      rowImages = LEVEL_DATA.SIXTEENTH_LEVEL.ROW_IMAGES;
+      numRows = LEVEL_DATA.SIXTEENTH_LEVEL.NUM_ROWS;
+      numCols = LEVEL_DATA.SIXTEENTH_LEVEL.NUM_COLS;
+    }
+
+    // Setting width
+    canvas.width = CANVAS_WIDTH;
+    if (level > 0 && level <= 10) {
+      canvas.height = CANVAS_HEIGHT[0];
+    } else if (level >= 11 && level <= 15) {
+      canvas.height = CANVAS_HEIGHT[1];
+    } else {
+      canvas.height = CANVAS_HEIGHT[2];
+    }
 
     // Before drawing, clear existing canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -155,7 +245,6 @@ var Engine = function (global) {
     // allEnemies.forEach(function(enemy) {
     //     enemy.render();
     // });
-
     player.render();
   }
 
@@ -181,6 +270,8 @@ var Engine = function (global) {
     "images/char-horn-girl.png",
     "images/char-pink-girl.png",
     "images/char-princess-girl.png",
+    "images/heart.png",
+    "images/heart–mini.png",
   ]);
   Resources.onReady(init);
 

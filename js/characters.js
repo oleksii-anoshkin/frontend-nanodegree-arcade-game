@@ -1,6 +1,3 @@
-let spriteSrc = "images/char-boy.png";
-let player = {};
-
 // Choosing a character before starting the game.
 (function startMenu() {
   // An array of character images
@@ -58,7 +55,7 @@ let player = {};
     }
 
     e.target.className += " set";
-    spriteSrc = e.target.getAttribute("src");
+    playerSpriteSrc = e.target.getAttribute("src");
   }
 
   // Add listeners
@@ -67,9 +64,11 @@ let player = {};
       setCharacter(e);
     }
     if (e.target.className.includes("menu__start-btn")) {
-      document.querySelector(".start-menu").classList.add("hidden");
+      let wrap = document.querySelector(".wrap");
+      wrap.removeChild(wrap.firstChild);
       createObjects();
       Engine(window);
+      infoBar();
     }
   });
 
@@ -81,9 +80,11 @@ let player = {};
       setCharacter(e);
     }
     if (e.key === "Enter" && e.target.className.includes("menu__start-btn")) {
-      document.querySelector(".start-menu").classList.add("hidden");
+      let wrap = document.querySelector(".wrap");
+      wrap.removeChild(wrap.firstChild);
       createObjects();
       Engine(window);
+      infoBar();
     }
   });
-})(this);
+})();
