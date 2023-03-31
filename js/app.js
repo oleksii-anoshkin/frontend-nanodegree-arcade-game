@@ -1,5 +1,6 @@
 // Global variables
 let allEnemies = [];
+let allRocks = [];
 let player = {};
 let score = 0;
 let level = 1;
@@ -27,6 +28,13 @@ const PLAYER_DATA = {
   SPRITE_HEIGTH: 132,
 };
 
+// Rocks variables
+const ROCKS_DATA = {
+  START_Y: [332, 660],
+  SPRITE_WIDTH: 80,
+  SPRITE_HEIGTH: 132,
+};
+
 // Enemy variables
 // const enemyData = {
 //   startX: [
@@ -41,19 +49,19 @@ const PLAYER_DATA = {
 
 // The function of creating game objects.
 function createObjects() {
-  // Enemies our player must avoid
-  let Enemy = function (x, y, width, height, speed) {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-    this.speed = speed;
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
-    this.sprite = "images/enemy-bug.png";
-  };
+  // // Enemies our player must avoid
+  // let Enemy = function (x, y, width, height, speed) {
+  //   // Variables applied to each of our instances go here,
+  //   // we've provided one for you to get started
+  //   this.x = x;
+  //   this.y = y;
+  //   this.width = width;
+  //   this.height = height;
+  //   this.speed = speed;
+  //   // The image/sprite for our enemies, this uses
+  //   // a helper we've provided to easily load images
+  //   this.sprite = "images/enemy-bug.png";
+  // };
 
   // // Update the enemy's position, required method for game
   // // Parameter: dt, a time delta between ticks
@@ -101,9 +109,13 @@ function createObjects() {
     );
   };
 
+  // Arrow control
   Player.prototype.handleInput = function (key) {
     if (key === "up" && this.y > CANVAS_DATA.BORDER_TOP) {
-      this.y -= CANVAS_DATA.VERT_MOVE;
+      if (player.checkRocksCollisions(this.x, this.y, "up") === true) {
+        this.y -= CANVAS_DATA.VERT_MOVE;
+      }
+
       if (this.y === CANVAS_DATA.BORDER_TOP) {
         if (level === 20) {
           winPopup();
@@ -124,8 +136,10 @@ function createObjects() {
             if (level > 0 && level <= 10) {
               this.y = PLAYER_DATA.START_Y[0];
             } else if (level >= 11 && level <= 15) {
+              this.updateRocks(ROCKS_DATA);
               this.y = PLAYER_DATA.START_Y[1];
             } else {
+              this.updateRocks(ROCKS_DATA);
               this.y = PLAYER_DATA.START_Y[2];
             }
 
@@ -142,27 +156,41 @@ function createObjects() {
       }
     } else if (key === "down") {
       if (level > 0 && level <= 10 && this.y < CANVAS_DATA.BORDER_BOT[0]) {
-        this.y += CANVAS_DATA.VERT_MOVE;
+        if (player.checkRocksCollisions(this.x, this.y, "down") === true) {
+          this.y += CANVAS_DATA.VERT_MOVE;
+        }
       } else if (
         level >= 11 &&
         level <= 15 &&
         this.y < CANVAS_DATA.BORDER_BOT[1]
       ) {
-        this.y += CANVAS_DATA.VERT_MOVE;
+        if (player.checkRocksCollisions(this.x, this.y, "down") === true) {
+          this.y += CANVAS_DATA.VERT_MOVE;
+        }
       } else if (level >= 16 && this.y < CANVAS_DATA.BORDER_BOT[2]) {
-        this.y += CANVAS_DATA.VERT_MOVE;
+        if (player.checkRocksCollisions(this.x, this.y, "down") === true) {
+          this.y += CANVAS_DATA.VERT_MOVE;
+        }
       }
     } else if (key === "left" && this.x > CANVAS_DATA.BORDER_LEFT) {
-      this.x -= CANVAS_DATA.HORZ_MOVE;
+      if (player.checkRocksCollisions(this.x, this.y, "left") === true) {
+        this.x -= CANVAS_DATA.HORZ_MOVE;
+      }
     } else if (key === "right" && this.x < CANVAS_DATA.BORDER_RIGHT) {
-      this.x += CANVAS_DATA.HORZ_MOVE;
+      if (player.checkRocksCollisions(this.x, this.y, "right") === true) {
+        this.x += CANVAS_DATA.HORZ_MOVE;
+      }
     }
   };
 
+  // Mouse control
   Player.prototype.mauseInput = function (x, y) {
     if (y < this.y && this.y - y >= 50 && this.y > CANVAS_DATA.BORDER_TOP) {
-      this.y -= CANVAS_DATA.VERT_MOVE;
-      window.scrollBy(0, (CANVAS_DATA.VERT_MOVE * -1) / 2);
+      if (player.checkRocksCollisions(this.x, this.y, "up") === true) {
+        this.y -= CANVAS_DATA.VERT_MOVE;
+        window.scrollBy(0, (CANVAS_DATA.VERT_MOVE * -1) / 2);
+      }
+
       if (this.y === CANVAS_DATA.BORDER_TOP) {
         if (level === 20) {
           winPopup();
@@ -183,8 +211,10 @@ function createObjects() {
             if (level > 0 && level <= 10) {
               this.y = PLAYER_DATA.START_Y[0];
             } else if (level >= 11 && level <= 15) {
+              this.updateRocks(ROCKS_DATA);
               this.y = PLAYER_DATA.START_Y[1];
             } else {
+              this.updateRocks(ROCKS_DATA);
               this.y = PLAYER_DATA.START_Y[2];
             }
 
@@ -201,33 +231,161 @@ function createObjects() {
       }
     } else if (y > this.y && y - this.y >= 50) {
       if (level > 0 && level <= 10 && this.y < CANVAS_DATA.BORDER_BOT[0]) {
-        this.y += CANVAS_DATA.VERT_MOVE;
-        window.scrollBy(0, CANVAS_DATA.VERT_MOVE / 2);
+        if (player.checkRocksCollisions(this.x, this.y, "down") === true) {
+          this.y += CANVAS_DATA.VERT_MOVE;
+          window.scrollBy(0, CANVAS_DATA.VERT_MOVE / 2);
+        }
       } else if (
         level >= 11 &&
         level <= 15 &&
         this.y < CANVAS_DATA.BORDER_BOT[1]
       ) {
-        this.y += CANVAS_DATA.VERT_MOVE;
-        window.scrollBy(0, CANVAS_DATA.VERT_MOVE / 2);
+        if (player.checkRocksCollisions(this.x, this.y, "down") === true) {
+          this.y += CANVAS_DATA.VERT_MOVE;
+          window.scrollBy(0, CANVAS_DATA.VERT_MOVE / 2);
+        }
       } else if (level >= 16 && this.y < CANVAS_DATA.BORDER_BOT[2]) {
-        this.y += CANVAS_DATA.VERT_MOVE;
-        window.scrollBy(0, CANVAS_DATA.VERT_MOVE / 2);
+        if (player.checkRocksCollisions(this.x, this.y, "down") === true) {
+          this.y += CANVAS_DATA.VERT_MOVE;
+          window.scrollBy(0, CANVAS_DATA.VERT_MOVE / 2);
+        }
       }
     } else if (
       x < this.x &&
       this.x - x >= 40 &&
       this.x > CANVAS_DATA.BORDER_LEFT
     ) {
-      this.x -= CANVAS_DATA.HORZ_MOVE;
+      if (player.checkRocksCollisions(this.x, this.y, "left") === true) {
+        this.x -= CANVAS_DATA.HORZ_MOVE;
+      }
     } else if (
       x > this.x &&
       x - this.x >= 40 &&
       this.x < CANVAS_DATA.BORDER_RIGHT
     ) {
-      this.x += CANVAS_DATA.HORZ_MOVE;
+      if (player.checkRocksCollisions(this.x, this.y, "right") === true) {
+        this.x += CANVAS_DATA.HORZ_MOVE;
+      }
     }
   };
+
+  // Updating the location of rocks when leveling up
+  Player.prototype.updateRocks = function (obj) {
+    allRocks = [];
+
+    if (level >= 11 && level <= 15) {
+      allRocks.push(
+        new Rock(
+          Math.floor(Math.random() * 5) * 100 + 10,
+          obj.START_Y[0],
+          obj.SPRITE_WIDTH,
+          obj.SPRITE_HEIGTH
+        )
+      );
+    } else if (level >= 16 && level <= 20) {
+      let arrX = [
+        Math.floor(Math.random() * 5) * 100 + 10,
+        Math.floor(Math.random() * 5) * 100 + 10,
+      ];
+
+      console.log(arrX);
+
+      if (arrX[0] === arrX[1]) {
+        if (arrX[0] >= 10 && arrX[0] <= 310) {
+          arrX[0] += 100;
+        } else {
+          arrX[0] -= 100;
+        }
+      }
+
+      console.log(arrX);
+
+      for (let i = 0; i <= 1; i += 1) {
+        allRocks.push(
+          new Rock(arrX[i], obj.START_Y[i], obj.SPRITE_WIDTH, obj.SPRITE_HEIGTH)
+        );
+      }
+    }
+  };
+
+  // Checking conflicts with rocks
+  Player.prototype.checkRocksCollisions = function (x, y, key) {
+    let posX = x;
+    let posY = y;
+
+    if (level >= 11 && level <= 20) {
+      if (key === "up") {
+        let rock = allRocks.find(
+          (elem) => elem.y === posY - CANVAS_DATA.VERT_MOVE - 6
+        );
+
+        if (rock !== undefined && rock.x === posX) {
+          return false;
+        }
+        return true;
+      } else if (key === "down") {
+        let rock = allRocks.find(
+          (elem) => elem.y === posY + CANVAS_DATA.VERT_MOVE - 6
+        );
+        if (rock !== undefined && rock.x === posX) {
+          return false;
+        }
+        return true;
+      } else if (key === "right") {
+        let rock = allRocks.find(
+          (elem) => elem.x === posX + CANVAS_DATA.HORZ_MOVE
+        );
+        if (rock !== undefined && rock.y === posY - 6) {
+          return false;
+        }
+        return true;
+      } else if (key === "left") {
+        let rock = allRocks.find(
+          (elem) => elem.x === posX - CANVAS_DATA.HORZ_MOVE
+        );
+        if (rock !== undefined && rock.y === posY - 6) {
+          return false;
+        }
+        return true;
+      }
+    }
+
+    return true;
+  };
+
+  // Rocks
+  let Rock = function (x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.sprite = "images/rock.png";
+  };
+
+  Rock.prototype.render = function () {
+    ctx.drawImage(
+      Resources.get(this.sprite),
+      this.x,
+      this.y,
+      this.width,
+      this.height
+    );
+  };
+
+  // Rock.prototype.checkCollisions = function () {
+  //   if (level >= 11 && level <= 20) {
+  //     console.log("player.y:", player.y);
+  //     console.log("rock.y:", this.y);
+  //     if (
+  //       player.x > this.x + ROCKS_DATA.SPRITE_WIDTH ||
+  //       player.x < this.x - ROCKS_DATA.SPRITE_WIDTH ||
+  //       player.y - 6 > this.y + ROCKS_DATA.SPRITE_HEIGTH / 2 ||
+  //       player.y - 6 < this.y - ROCKS_DATA.SPRITE_HEIGTH / 2
+  //     ) {
+  //     } else {
+  //     }
+  //   }
+  // };
 
   // Now instantiate your objects.
   // Place all enemy objects in an array called allEnemies

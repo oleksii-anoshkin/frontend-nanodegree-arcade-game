@@ -161,6 +161,12 @@ var Engine = function (global) {
     // allEnemies.forEach(function(enemy) {
     //     enemy.update(dt);
     // });
+    // if (level >= 11 && level <= 20) {
+    //   allRocks.forEach(function(enemy) {
+    //       enemy.update(dt);
+    //   });
+    // }
+
     player.update();
   }
 
@@ -245,6 +251,14 @@ var Engine = function (global) {
     // allEnemies.forEach(function(enemy) {
     //     enemy.render();
     // });
+    if (level > 10 && level <= 15) {
+      allRocks[0].render();
+    } else if (level >= 15 && level <= 20) {
+      allRocks.forEach(function (enemy) {
+        enemy.render();
+      });
+    }
+
     player.render();
   }
 
@@ -272,6 +286,7 @@ var Engine = function (global) {
     "images/char-princess-girl.png",
     "images/heart.png",
     "images/heart–mini.png",
+    "images/rock.png",
   ]);
   Resources.onReady(init);
 
