@@ -161,11 +161,10 @@ var Engine = function (global) {
     // allEnemies.forEach(function(enemy) {
     //     enemy.update(dt);
     // });
-    // if (level >= 11 && level <= 20) {
-    //   allRocks.forEach(function(enemy) {
-    //       enemy.update(dt);
-    //   });
-    // }
+
+    if (level >= 11 && level <= 20) {
+      jevel.update();
+    }
 
     player.update();
   }
@@ -259,6 +258,10 @@ var Engine = function (global) {
       });
     }
 
+    if (level > 10 && level <= 20) {
+      jevel.render();
+    }
+
     player.render();
   }
 
@@ -287,6 +290,11 @@ var Engine = function (global) {
     "images/heart.png",
     "images/heart–mini.png",
     "images/rock.png",
+    "images/gem-blue.png",
+    "images/gem-green.png",
+    "images/gem-orange.png",
+    "images/key.png",
+    "images/star.png",
   ]);
   Resources.onReady(init);
 

@@ -1,6 +1,7 @@
 // Global variables
 let allEnemies = [];
 let allRocks = [];
+let jevel = {};
 let player = {};
 let score = 0;
 let level = 1;
@@ -35,17 +36,21 @@ const ROCKS_DATA = {
   SPRITE_HEIGTH: 132,
 };
 
+// Jewelry variables
+const JEWELRY_DATA = {
+  START_Y: [360, 688],
+  SPRITE_WIDTH: 52,
+  SPRITE_HEIGTH: 88,
+  SPRITES: [
+    "images/gem-blue.png",
+    "images/gem-green.png",
+    "images/gem-orange.png",
+    "images/key.png",
+    "images/star.png",
+  ],
+};
+
 // Enemy variables
-// const enemyData = {
-//   startX: [
-//     [150, 450],
-//     [0, 300],
-//     [300, 0],
-//   ],
-//   startY: [72, 154, 236],
-//   spriteWidth: 92,
-//   spriteHeigth: 152,
-// };
 
 // The function of creating game objects.
 function createObjects() {
@@ -118,6 +123,8 @@ function createObjects() {
 
       if (this.y === CANVAS_DATA.BORDER_TOP) {
         if (level === 20) {
+          score += 100;
+          infoBar();
           winPopup();
           setTimeout(() => {
             finishGame();
@@ -137,9 +144,11 @@ function createObjects() {
               this.y = PLAYER_DATA.START_Y[0];
             } else if (level >= 11 && level <= 15) {
               this.updateRocks(ROCKS_DATA);
+              this.updateJewelry(JEWELRY_DATA);
               this.y = PLAYER_DATA.START_Y[1];
             } else {
               this.updateRocks(ROCKS_DATA);
+              this.updateJewelry(JEWELRY_DATA);
               this.y = PLAYER_DATA.START_Y[2];
             }
 
@@ -193,6 +202,8 @@ function createObjects() {
 
       if (this.y === CANVAS_DATA.BORDER_TOP) {
         if (level === 20) {
+          score += 100;
+          infoBar();
           winPopup();
           setTimeout(() => {
             finishGame();
@@ -212,9 +223,11 @@ function createObjects() {
               this.y = PLAYER_DATA.START_Y[0];
             } else if (level >= 11 && level <= 15) {
               this.updateRocks(ROCKS_DATA);
+              this.updateJewelry(JEWELRY_DATA);
               this.y = PLAYER_DATA.START_Y[1];
             } else {
               this.updateRocks(ROCKS_DATA);
+              this.updateJewelry(JEWELRY_DATA);
               this.y = PLAYER_DATA.START_Y[2];
             }
 
@@ -288,8 +301,6 @@ function createObjects() {
         Math.floor(Math.random() * 5) * 100 + 10,
       ];
 
-      console.log(arrX);
-
       if (arrX[0] === arrX[1]) {
         if (arrX[0] >= 10 && arrX[0] <= 310) {
           arrX[0] += 100;
@@ -297,8 +308,6 @@ function createObjects() {
           arrX[0] -= 100;
         }
       }
-
-      console.log(arrX);
 
       for (let i = 0; i <= 1; i += 1) {
         allRocks.push(
@@ -353,6 +362,61 @@ function createObjects() {
     return true;
   };
 
+  // Updating the location of jewelry when leveling up
+  Player.prototype.updateJewelry = function (obj) {
+    jevel = {};
+
+    if (level >= 11 && level <= 15) {
+      let posX = Math.floor(Math.random() * 5) * 100 + 24;
+      let jevelSpriteSrc = obj.SPRITES[Math.floor(Math.random() * 5)];
+
+      if (posX - 14 === allRocks[0].x) {
+        if (posX >= 24 && posX <= 324) {
+          posX += 100;
+        } else {
+          posX -= 100;
+        }
+      }
+
+      jevel = new Jewel(
+        posX,
+        obj.START_Y[0],
+        obj.SPRITE_WIDTH,
+        obj.SPRITE_HEIGTH,
+        jevelSpriteSrc
+      );
+    } else if (level >= 16 && level <= 20) {
+      let jevelSpriteSrc = obj.SPRITES[Math.floor(Math.random() * 5)];
+      let randomI = Math.floor(Math.random() * 2);
+      let posX = Math.floor(Math.random() * 5) * 100 + 24;
+      let posY = obj.START_Y[randomI];
+
+      if (posY - 28 === allRocks[0].y && posX - 14 === allRocks[0].x) {
+        if (posX >= 24 && posX <= 324) {
+          posX += 100;
+        } else {
+          posX -= 100;
+        }
+      }
+
+      if (posY - 28 === allRocks[1].y && posX - 14 === allRocks[1].x) {
+        if (posX >= 24 && posX <= 324) {
+          posX += 100;
+        } else {
+          posX -= 100;
+        }
+      }
+
+      jevel = new Jewel(
+        posX,
+        posY,
+        obj.SPRITE_WIDTH,
+        obj.SPRITE_HEIGTH,
+        jevelSpriteSrc
+      );
+    }
+  };
+
   // Rocks
   let Rock = function (x, y, width, height) {
     this.x = x;
@@ -372,34 +436,54 @@ function createObjects() {
     );
   };
 
-  // Rock.prototype.checkCollisions = function () {
-  //   if (level >= 11 && level <= 20) {
-  //     console.log("player.y:", player.y);
-  //     console.log("rock.y:", this.y);
-  //     if (
-  //       player.x > this.x + ROCKS_DATA.SPRITE_WIDTH ||
-  //       player.x < this.x - ROCKS_DATA.SPRITE_WIDTH ||
-  //       player.y - 6 > this.y + ROCKS_DATA.SPRITE_HEIGTH / 2 ||
-  //       player.y - 6 < this.y - ROCKS_DATA.SPRITE_HEIGTH / 2
-  //     ) {
-  //     } else {
-  //     }
-  //   }
-  // };
+  // Jewelry
+  let Jewel = function (x, y, width, height, sprite) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.sprite = sprite;
+  };
+
+  Jewel.prototype.render = function () {
+    ctx.drawImage(
+      Resources.get(this.sprite),
+      this.x,
+      this.y,
+      this.width,
+      this.height
+    );
+  };
+
+  Jewel.prototype.update = function () {
+    this.checkCollisions();
+  };
+
+  Jewel.prototype.checkCollisions = function () {
+    if (player.x + 14 === this.x && player.y + 22 === this.y) {
+      if (
+        this.sprite === JEWELRY_DATA.SPRITES[0] ||
+        this.sprite === JEWELRY_DATA.SPRITES[1] ||
+        this.sprite === JEWELRY_DATA.SPRITES[2]
+      ) {
+        score += 40;
+        infoBar();
+      } else if (this.sprite === JEWELRY_DATA.SPRITES[3]) {
+        score += 80;
+        infoBar();
+      } else if (this.sprite === JEWELRY_DATA.SPRITES[4]) {
+        score += 135;
+        infoBar();
+      }
+      this.width = 0;
+      this.height = 0;
+      this.x = -100;
+      this.y = -100;
+    }
+  };
 
   // Now instantiate your objects.
   // Place all enemy objects in an array called allEnemies
-  // enemyData.startY.forEach((location) => {
-  //   allEnemies.push(
-  //     new Enemy(
-  //       enemyData.startX,
-  //       location,
-  //       enemyData.spriteWidth,
-  //       enemyData.spriteHeigth,
-  //       gameSpeed
-  //     )
-  //   );
-  // });
 
   // Place the player object in a variable called player
   player = new Player(
@@ -445,29 +529,6 @@ function createObjects() {
       player.mauseInput(x, y);
     }
   });
-
-  // function createEnemyArray(level) {
-  //   if (level >= 0 && level <= 5) {
-  //     for (let i = 0; i <= 2; i += 1) {
-  //       for (let j = 0; j <= 1; j += 1) {
-  //         allEnemies.push(
-  //           new Enemy(
-  //             enemyData.startX[i][j],
-  //             enemyData.startY[i],
-  //             spriteWidth,
-  //             spriteHeigth,
-  //             gameSpeed
-  //           )
-  //         );
-  //       }
-  //     }
-  //   }
-  //   // } else if (level >= 6 && level <= 10) {
-  //   // } else if (level >= 11 && level <= 15) {
-  //   // } else if (level >= 16 && level <= 20) {
-  //   // } else if (level >= 21 && level <= 25) {
-  //   // }
-  // }
 }
 
 // Other functions
@@ -483,16 +544,22 @@ function countMaxLevel(level) {
 // Check srore
 function countLevelScore(level) {
   switch (true) {
-    case level > 0 && level <= 5:
+    case level > 0 && level <= 3:
       return 5;
 
-    case level >= 6 && level <= 10:
+    case level > 3 && level <= 6:
       return 10;
 
-    case level >= 11 && level <= 15:
+    case level > 6 && level <= 10:
+      return 15;
+
+    case level > 10 && level <= 13:
       return 20;
 
-    case level >= 16 && level <= 20:
+    case level > 13 && level <= 16:
       return 30;
+
+    case level > 16 && level <= 20:
+      return 45;
   }
 }
