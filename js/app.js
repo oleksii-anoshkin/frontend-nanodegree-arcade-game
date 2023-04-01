@@ -2,6 +2,7 @@
 let allEnemies = [];
 let allRocks = [];
 let jevel = {};
+let heart = {};
 let player = {};
 let score = 0;
 let level = 1;
@@ -48,6 +49,14 @@ const JEWELRY_DATA = {
     "images/key.png",
     "images/star.png",
   ],
+};
+
+// Heart variables
+const HEART_DATA = {
+  START_X: [10, 110, 210, 310, 410],
+  START_Y: [372, 700],
+  SPRITE_WIDTH: 52,
+  SPRITE_HEIGTH: 88,
 };
 
 // Enemy variables
@@ -145,10 +154,12 @@ function createObjects() {
             } else if (level >= 11 && level <= 15) {
               this.updateRocks(ROCKS_DATA);
               this.updateJewelry(JEWELRY_DATA);
+              this.updateHeart(HEART_DATA);
               this.y = PLAYER_DATA.START_Y[1];
             } else {
               this.updateRocks(ROCKS_DATA);
               this.updateJewelry(JEWELRY_DATA);
+              this.updateHeart(HEART_DATA);
               this.y = PLAYER_DATA.START_Y[2];
             }
 
@@ -224,10 +235,12 @@ function createObjects() {
             } else if (level >= 11 && level <= 15) {
               this.updateRocks(ROCKS_DATA);
               this.updateJewelry(JEWELRY_DATA);
+              this.updateHeart(HEART_DATA);
               this.y = PLAYER_DATA.START_Y[1];
             } else {
               this.updateRocks(ROCKS_DATA);
               this.updateJewelry(JEWELRY_DATA);
+              this.updateHeart(HEART_DATA);
               this.y = PLAYER_DATA.START_Y[2];
             }
 
@@ -417,6 +430,48 @@ function createObjects() {
     }
   };
 
+  // Updating the location of heart when leveling up
+  Player.prototype.updateHeart = function (obj) {
+    heart = {};
+
+    if (getRandomNumber(11, 21) === level) {
+      let arrX = [].concat(HEART_DATA.START_X);
+
+      if (level >= 11 && level <= 15) {
+        let checkX = [allRocks[0].x, jevel.x - 14];
+
+        checkX.forEach((elem) => {
+          arrX = arrX.filter((position) => elem !== position);
+        });
+
+        heart = new Heart(
+          arrX[Math.floor(Math.random() * (arrX.length - 1))] + 14,
+          obj.START_Y[0],
+          obj.SPRITE_WIDTH,
+          obj.SPRITE_HEIGTH
+        );
+      } else if (level >= 16 && level <= 20) {
+        let randomI = Math.floor(Math.random() * 2);
+        let posY = obj.START_Y[randomI];
+
+        if (jevel.y === posY - 12) {
+          arrX = arrX.filter((position) => jevel.x - 14 !== position);
+        }
+
+        if (allRocks[randomI].y === posY - 40) {
+          arrX = arrX.filter((position) => allRocks[randomI].x !== position);
+        }
+
+        heart = new Heart(
+          arrX[Math.floor(Math.random() * (arrX.length - 1))] + 14,
+          posY,
+          obj.SPRITE_WIDTH,
+          obj.SPRITE_HEIGTH
+        );
+      }
+    }
+  };
+
   // Rocks
   let Rock = function (x, y, width, height) {
     this.x = x;
@@ -475,6 +530,44 @@ function createObjects() {
         score += 135;
         infoBar();
       }
+      this.width = 0;
+      this.height = 0;
+      this.x = -100;
+      this.y = -100;
+    }
+  };
+
+  // Heart
+  let Heart = function (x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.sprite = "images/heart.png";
+  };
+
+  Heart.prototype.render = function () {
+    ctx.drawImage(
+      Resources.get(this.sprite),
+      this.x,
+      this.y,
+      this.width,
+      this.height
+    );
+  };
+
+  Heart.prototype.update = function () {
+    this.checkCollisions();
+  };
+
+  Heart.prototype.checkCollisions = function () {
+    if (player.x + 14 === this.x && player.y + 34 === this.y) {
+      score += 50;
+      if (life < maxLife) {
+        life += 1;
+      }
+      infoBar();
+
       this.width = 0;
       this.height = 0;
       this.x = -100;
@@ -562,4 +655,9 @@ function countLevelScore(level) {
     case level > 16 && level <= 20:
       return 45;
   }
+}
+
+// Random number
+function getRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min) + min);
 }

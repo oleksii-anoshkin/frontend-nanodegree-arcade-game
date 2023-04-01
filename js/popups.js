@@ -104,7 +104,7 @@ function finishGame() {
   document.querySelector(".start-menu__box").append(menuImgs);
 
   let characterImg = document.createElement("img");
-  characterImg.setAttribute("class", "menu__characters-img");
+  characterImg.setAttribute("class", "menu__finish-img");
   characterImg.setAttribute("src", `${playerSpriteSrc}`);
   menuImgs.append(characterImg);
 

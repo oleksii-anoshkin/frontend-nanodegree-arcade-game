@@ -164,6 +164,9 @@ var Engine = function (global) {
 
     if (level >= 11 && level <= 20) {
       jevel.update();
+      if (heart.x) {
+        heart.update();
+      }
     }
 
     player.update();
@@ -260,6 +263,9 @@ var Engine = function (global) {
 
     if (level > 10 && level <= 20) {
       jevel.render();
+      if (heart.x) {
+        heart.render();
+      }
     }
 
     player.render();
