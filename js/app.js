@@ -788,21 +788,21 @@ function setEnemySpeed(i, level) {
     }
   } else if (level > 5 && level <= 10) {
     if (i % 2 === 0) {
-      return gameSpeed / 2;
-    } else {
-      return (gameSpeed / 2) * -1;
-    }
-  } else if (level > 10 && level <= 15) {
-    if (i % 2 === 0) {
       return gameSpeed / 3;
     } else {
       return (gameSpeed / 3) * -1;
     }
-  } else if (level > 15 && level <= 20) {
+  } else if (level > 10 && level <= 15) {
     if (i % 2 === 0) {
       return gameSpeed / 4;
     } else {
       return (gameSpeed / 4) * -1;
+    }
+  } else if (level > 15 && level <= 20) {
+    if (i % 2 === 0) {
+      return gameSpeed / 6;
+    } else {
+      return (gameSpeed / 6) * -1;
     }
   }
 }
