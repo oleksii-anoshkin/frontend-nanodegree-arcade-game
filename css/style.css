@@ -22,7 +22,7 @@ html {
     background: url(../images/background.jpg) 0 0 / cover no-repeat fixed;
 }
 
-/* scrollbar styles */
+/* Scrollbar styles */
 .wrap::-webkit-scrollbar {
     width: 6px;
 }
@@ -193,9 +193,10 @@ html {
 }
 
 /* Popups styles*/
-/* Level up popup */
+/* Level up / Win / Game over popup styles */
 .level-up,
-.win {
+.win,
+.game-over {
     position: absolute;
     top: 0;
     left: 0;
@@ -213,6 +214,10 @@ html {
 
 .win {
     background: url(../images/winner.webp) center / 300px auto no-repeat;
+}
+
+.game-over {
+    background: url(../images/game-over.gif) center / 300px 300px no-repeat;
 }
 
 /* Info bar popup */
@@ -296,12 +301,9 @@ html {
 
 /* Media */
 @media (max-width: 640px) {
-
     .start-menu__box {
         width: 88%;
     }
-
-
 }
 
 @media (max-width: 540px) {

@@ -1,6 +1,7 @@
+// Start the game.
 // Choosing a character before starting the game.
 (function startMenu() {
-  // An array of character images
+  // An array of character images.
   const srcImgs = {
     boy: "images/char-boy.png",
     cat: "images/char-cat-girl.png",
@@ -24,11 +25,12 @@
   menuTitle.insertAdjacentHTML("afterbegin", "Choose a character:");
   document.querySelector(".start-menu__box").prepend(menuTitle);
 
-  // Сreate character images.
+  // Сreate character images container.
   let menuImgs = document.createElement("div");
   menuImgs.setAttribute("class", "menu__characters");
   document.querySelector(".start-menu__box").append(menuImgs);
 
+  // Сreate all character images.
   for (let key in srcImgs) {
     let characterImg = document.createElement("img");
     characterImg.setAttribute("class", "menu__characters-img");
@@ -37,6 +39,7 @@
     menuImgs.append(characterImg);
   }
 
+  // Select one of the default images.
   document.querySelector(".menu__characters-img").className += " set";
 
   // Сreate a start btn.
@@ -60,9 +63,11 @@
 
   // Add listeners
   document.addEventListener("click", function (e) {
+    // Select character image.
     if (e.target.className.includes("menu__characters-img")) {
       setCharacter(e);
     }
+    // React to pressing the button and starting the game.
     if (e.target.className.includes("menu__start-btn")) {
       let wrap = document.querySelector(".wrap");
       wrap.removeChild(wrap.firstChild);
@@ -73,12 +78,14 @@
   });
 
   document.addEventListener("keyup", function (e) {
+    // Select character image.
     if (
       e.key === "Enter" &&
       e.target.className.includes("menu__characters-img")
     ) {
       setCharacter(e);
     }
+    // React to pressing the button and starting the game.
     if (e.key === "Enter" && e.target.className.includes("menu__start-btn")) {
       let wrap = document.querySelector(".wrap");
       wrap.removeChild(wrap.firstChild);

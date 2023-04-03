@@ -1,9 +1,11 @@
 // Level up popup
 function levelUpPopup() {
+  // Create a popup container
   let levelUpPopup = document.createElement("div");
   levelUpPopup.setAttribute("class", "level-up");
   document.querySelector(".wrap").prepend(levelUpPopup);
 
+  // Delete after animation
   setTimeout(() => {
     let wrap = document.querySelector(".wrap");
     wrap.removeChild(wrap.firstChild);
@@ -12,18 +14,35 @@ function levelUpPopup() {
 
 // Win popup
 function winPopup() {
+  // Create a popup container
   let winPopup = document.createElement("div");
   winPopup.setAttribute("class", "win");
   document.querySelector(".wrap").prepend(winPopup);
 
+  // Delete after animation
   setTimeout(() => {
     let wrap = document.querySelector(".wrap");
     wrap.removeChild(wrap.firstChild);
   }, 1500);
 }
 
+// Game over popup
+function gameOverPopup() {
+  // Create a popup container
+  let gameOverPopup = document.createElement("div");
+  gameOverPopup.setAttribute("class", "game-over");
+  document.querySelector(".wrap").prepend(gameOverPopup);
+
+  // Delete after animation
+  setTimeout(() => {
+    let wrap = document.querySelector(".wrap");
+    wrap.removeChild(wrap.firstChild);
+  }, 800);
+}
+
 // Info bar
 function infoBar() {
+  // Variables
   const TEXT_ARR = {
     SCORE: "score",
     LEVEL: "level",
@@ -31,6 +50,7 @@ function infoBar() {
     HEART_SRC: "images/heart–mini.png",
   };
 
+  // Сheck the presence of the element on the page and delete it before creating a new instance.
   let infoBar = document.getElementsByClassName("info-bar__box");
 
   if (infoBar.length !== 0) {
@@ -38,10 +58,12 @@ function infoBar() {
     wrap.removeChild(wrap.lastChild);
   }
 
+  // Create a container
   let infoBarBox = document.createElement("ul");
   infoBarBox.setAttribute("class", "info-bar__box");
   document.querySelector(".wrap").append(infoBarBox);
 
+  // Create elements
   for (let i = 0; i <= 3; i += 1) {
     let infoBarItem = document.createElement("li");
     if (i === 0) {
@@ -78,12 +100,12 @@ function infoBar() {
 
 // Finish game popup
 function finishGame() {
-  // We remove the playing field and counters.
+  // We remove the playing field and info bar.
   let wrap = document.querySelector(".wrap");
   wrap.removeChild(wrap.lastChild);
   wrap.removeChild(wrap.lastChild);
 
-  // Сreate a popup window.
+  // Create a container
   let startMenu = document.createElement("div");
   startMenu.setAttribute("class", "start-menu");
   document.querySelector(".wrap").append(startMenu);
@@ -95,7 +117,11 @@ function finishGame() {
   // Сreate a title.
   let menuTitle = document.createElement("h2");
   menuTitle.setAttribute("class", "menu__title");
-  menuTitle.insertAdjacentHTML("afterbegin", "You won! Game Over!");
+  if (life > 0) {
+    menuTitle.insertAdjacentHTML("afterbegin", "You won! Game Over!");
+  } else {
+    menuTitle.insertAdjacentHTML("afterbegin", "Game Over!");
+  }
   document.querySelector(".start-menu__box").prepend(menuTitle);
 
   // Сreate character images.

@@ -158,9 +158,9 @@ var Engine = function (global) {
    * render methods.
    */
   function updateEntities(dt) {
-    // allEnemies.forEach(function(enemy) {
-    //     enemy.update(dt);
-    // });
+    allEnemies.forEach(function (enemy) {
+      enemy.update(dt);
+    });
 
     if (level >= 11 && level <= 20) {
       jevel.update();
@@ -250,9 +250,10 @@ var Engine = function (global) {
     /* Loop through all of the objects within the allEnemies array and call
      * the render function you have defined.
      */
-    // allEnemies.forEach(function(enemy) {
-    //     enemy.render();
-    // });
+    allEnemies.forEach(function (enemy) {
+      enemy.render();
+    });
+
     if (level > 10 && level <= 15) {
       allRocks[0].render();
     } else if (level >= 15 && level <= 20) {
@@ -287,7 +288,8 @@ var Engine = function (global) {
     "images/stone-block.png",
     "images/water-block.png",
     "images/grass-block.png",
-    "images/enemy-bug.png",
+    "images/enemy-bug-right.png",
+    "images/enemy-bug-left.png",
     "images/char-boy.png",
     "images/char-cat-girl.png",
     "images/char-horn-girl.png",

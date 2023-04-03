@@ -9,7 +9,7 @@ let level = 1;
 let maxLevel = 1;
 let life = 2;
 let maxLife = 4;
-let gameSpeed = 6;
+let gameSpeed = 10;
 let playerSpriteSrc = "images/char-boy.png";
 
 // Canvas variables
@@ -60,45 +60,105 @@ const HEART_DATA = {
 };
 
 // Enemy variables
+const ENEMY_DATA = {
+  START_Y: [
+    [82, 164, 246],
+    [82, 164, 246, 328],
+    [82, 164, 246, 410, 492, 574, 656],
+    [82, 164, 246, 410, 492, 574, 738, 820, 902, 984],
+  ],
+  SPRITE_WIDTH: 80,
+  SPRITE_HEIGTH: 132,
+  SPRITES: ["images/enemy-bug-right.png", "images/enemy-bug-left.png"],
+};
 
 // The function of creating game objects.
 function createObjects() {
-  // // Enemies our player must avoid
-  // let Enemy = function (x, y, width, height, speed) {
-  //   // Variables applied to each of our instances go here,
-  //   // we've provided one for you to get started
-  //   this.x = x;
-  //   this.y = y;
-  //   this.width = width;
-  //   this.height = height;
-  //   this.speed = speed;
-  //   // The image/sprite for our enemies, this uses
-  //   // a helper we've provided to easily load images
-  //   this.sprite = "images/enemy-bug.png";
-  // };
+  // Enemies our player must avoid
+  let Enemy = function (x, y, width, height, speed, sprite) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.speed = speed;
+    this.sprite = sprite;
+  };
 
-  // // Update the enemy's position, required method for game
-  // // Parameter: dt, a time delta between ticks
-  // Enemy.prototype.update = function (dt) {
-  //   // You should multiply any movement by the dt parameter
-  //   // which will ensure the game runs at the same speed for
-  //   // all computers.
-  //   this.x += this.speed * dt * gameSpeed;
-  //   if (this.x > canvasWidth + this.width) {
-  //     this.x = 0 - this.width;
-  //   }
-  // };
+  // Update the enemy's position, required method for game
+  Enemy.prototype.update = function (dt) {
+    this.x += this.speed * dt * gameSpeed;
 
-  // // Draw the enemy on the screen, required method for game
-  // Enemy.prototype.render = function () {
-  //   ctx.drawImage(
-  //     Resources.get(this.sprite),
-  //     this.x,
-  //     this.y,
-  //     this.width,
-  //     this.height
-  //   );
-  // };
+    if (this.x > CANVAS_WIDTH + this.width / 2) {
+      this.x = 0 - this.width;
+    } else if (this.x < 0 - this.width) {
+      this.x = CANVAS_WIDTH + this.width / 2;
+    }
+
+    this.checkCollisions();
+  };
+
+  // Method that checks the interaction between the character and the enemies.
+  Enemy.prototype.checkCollisions = function () {
+    if (
+      player.x > this.x - ENEMY_DATA.SPRITE_WIDTH * 0.8 &&
+      player.y - 10 === this.y &&
+      player.x < this.x + ENEMY_DATA.SPRITE_WIDTH * 0.8 &&
+      player.y - 10 === this.y
+    ) {
+      if (life > 1) {
+        level = 1;
+        gameSpeed = 8;
+        life -= 1;
+        score = 0;
+
+        player.x = Math.floor(Math.random() * 5) * 100 + 10;
+
+        if (level > 0 && level <= 10) {
+          player.y = PLAYER_DATA.START_Y[0];
+        } else if (level >= 11 && level <= 15) {
+          player.y = PLAYER_DATA.START_Y[1];
+        } else {
+          player.y = PLAYER_DATA.START_Y[2];
+        }
+
+        player.updateRocks(ROCKS_DATA);
+        player.updateJewelry(JEWELRY_DATA);
+        player.updateHeart(HEART_DATA);
+        player.updateEnemies(ENEMY_DATA);
+
+        infoBar();
+      } else {
+        // Game over if the character has too few lives.
+        life -= 1;
+        player.x = 210;
+
+        if (level > 0 && level <= 10) {
+          player.y = PLAYER_DATA.START_Y[0];
+        } else if (level >= 11 && level <= 15) {
+          player.y = PLAYER_DATA.START_Y[1];
+        } else {
+          player.y = PLAYER_DATA.START_Y[2];
+        }
+
+        infoBar();
+        gameOverPopup();
+        setTimeout(() => {
+          finishGame();
+        }, 800);
+      }
+    }
+  };
+
+  // Draw the enemy on the screen, required method for game
+  Enemy.prototype.render = function () {
+    ctx.drawImage(
+      Resources.get(this.sprite),
+      this.x,
+      this.y,
+      this.width,
+      this.height
+    );
+  };
 
   // Now write your own player class
   let Player = function (x, y, width, height, sprite) {
@@ -109,10 +169,10 @@ function createObjects() {
     this.sprite = sprite;
   };
 
-  // This class requires an update(), render() and
-  // a handleInput() method.
+  // Updating player information.
   Player.prototype.update = function () {};
 
+  // Draw the player on the screen
   Player.prototype.render = function () {
     ctx.drawImage(
       Resources.get(this.sprite),
@@ -126,11 +186,13 @@ function createObjects() {
   // Arrow control
   Player.prototype.handleInput = function (key) {
     if (key === "up" && this.y > CANVAS_DATA.BORDER_TOP) {
+      // Check the interaction with rocks.
       if (player.checkRocksCollisions(this.x, this.y, "up") === true) {
         this.y -= CANVAS_DATA.VERT_MOVE;
       }
 
       if (this.y === CANVAS_DATA.BORDER_TOP) {
+        // Ending the game after passing the 20th level.
         if (level === 20) {
           score += 100;
           infoBar();
@@ -139,6 +201,7 @@ function createObjects() {
             finishGame();
           }, 1500);
         } else {
+          // Raise the level.
           levelUpPopup();
 
           setTimeout(() => {
@@ -152,20 +215,20 @@ function createObjects() {
             if (level > 0 && level <= 10) {
               this.y = PLAYER_DATA.START_Y[0];
             } else if (level >= 11 && level <= 15) {
-              this.updateRocks(ROCKS_DATA);
-              this.updateJewelry(JEWELRY_DATA);
-              this.updateHeart(HEART_DATA);
               this.y = PLAYER_DATA.START_Y[1];
             } else {
-              this.updateRocks(ROCKS_DATA);
-              this.updateJewelry(JEWELRY_DATA);
-              this.updateHeart(HEART_DATA);
               this.y = PLAYER_DATA.START_Y[2];
             }
+
+            this.updateRocks(ROCKS_DATA);
+            this.updateJewelry(JEWELRY_DATA);
+            this.updateHeart(HEART_DATA);
+            this.updateEnemies(ENEMY_DATA);
 
             infoBar();
           }, 400);
 
+          // We scroll down the page when the height of the screen is too high.
           setTimeout(() => {
             document.querySelector(".canvas").scrollIntoView({
               behavior: "smooth",
@@ -206,6 +269,7 @@ function createObjects() {
   // Mouse control
   Player.prototype.mauseInput = function (x, y) {
     if (y < this.y && this.y - y >= 50 && this.y > CANVAS_DATA.BORDER_TOP) {
+      // Check the interaction with rocks.
       if (player.checkRocksCollisions(this.x, this.y, "up") === true) {
         this.y -= CANVAS_DATA.VERT_MOVE;
         window.scrollBy(0, (CANVAS_DATA.VERT_MOVE * -1) / 2);
@@ -213,6 +277,7 @@ function createObjects() {
 
       if (this.y === CANVAS_DATA.BORDER_TOP) {
         if (level === 20) {
+          // Ending the game after passing the 20th level.
           score += 100;
           infoBar();
           winPopup();
@@ -220,6 +285,7 @@ function createObjects() {
             finishGame();
           }, 1500);
         } else {
+          // Raise the level.
           levelUpPopup();
 
           setTimeout(() => {
@@ -233,20 +299,20 @@ function createObjects() {
             if (level > 0 && level <= 10) {
               this.y = PLAYER_DATA.START_Y[0];
             } else if (level >= 11 && level <= 15) {
-              this.updateRocks(ROCKS_DATA);
-              this.updateJewelry(JEWELRY_DATA);
-              this.updateHeart(HEART_DATA);
               this.y = PLAYER_DATA.START_Y[1];
             } else {
-              this.updateRocks(ROCKS_DATA);
-              this.updateJewelry(JEWELRY_DATA);
-              this.updateHeart(HEART_DATA);
               this.y = PLAYER_DATA.START_Y[2];
             }
+
+            this.updateRocks(ROCKS_DATA);
+            this.updateJewelry(JEWELRY_DATA);
+            this.updateHeart(HEART_DATA);
+            this.updateEnemies(ENEMY_DATA);
 
             infoBar();
           }, 400);
 
+          // We scroll down the page when the height of the screen is too high.
           setTimeout(() => {
             document.querySelector(".canvas").scrollIntoView({
               behavior: "smooth",
@@ -472,6 +538,37 @@ function createObjects() {
     }
   };
 
+  // Updating the location of enemies when leveling up
+  Player.prototype.updateEnemies = function (obj) {
+    if (level === 1 || level === 6 || level === 11 || level === 16) {
+      console.log("+");
+      allEnemies = [];
+      let enemiesLines = setEnemiesLines(level);
+      let arrX = [];
+
+      for (
+        let i = 0;
+        i <= ENEMY_DATA.START_Y[enemiesLines].length - 1;
+        i += 1
+      ) {
+        arrX.push(Math.floor(Math.random() * 5) * 100 + 10);
+      }
+
+      for (let i = 0; i <= arrX.length - 1; i += 1) {
+        allEnemies.push(
+          new Enemy(
+            arrX[i],
+            ENEMY_DATA.START_Y[enemiesLines][i],
+            ENEMY_DATA.SPRITE_WIDTH,
+            ENEMY_DATA.SPRITE_HEIGTH,
+            setEnemySpeed(i, level),
+            setEnemySprite(i)
+          )
+        );
+      }
+    }
+  };
+
   // Rocks
   let Rock = function (x, y, width, height) {
     this.x = x;
@@ -481,6 +578,7 @@ function createObjects() {
     this.sprite = "images/rock.png";
   };
 
+  // Draw rocks on the screen
   Rock.prototype.render = function () {
     ctx.drawImage(
       Resources.get(this.sprite),
@@ -500,6 +598,7 @@ function createObjects() {
     this.sprite = sprite;
   };
 
+  // Draw jewelry on the screen
   Jewel.prototype.render = function () {
     ctx.drawImage(
       Resources.get(this.sprite),
@@ -510,10 +609,12 @@ function createObjects() {
     );
   };
 
+  // Updating jewelry information.
   Jewel.prototype.update = function () {
     this.checkCollisions();
   };
 
+  // Checking conflicts with jewelry
   Jewel.prototype.checkCollisions = function () {
     if (player.x + 14 === this.x && player.y + 22 === this.y) {
       if (
@@ -546,6 +647,7 @@ function createObjects() {
     this.sprite = "images/heart.png";
   };
 
+  // Draw heart on the screen
   Heart.prototype.render = function () {
     ctx.drawImage(
       Resources.get(this.sprite),
@@ -556,10 +658,12 @@ function createObjects() {
     );
   };
 
+  // Updating heart information.
   Heart.prototype.update = function () {
     this.checkCollisions();
   };
 
+  // Checking conflicts with heart
   Heart.prototype.checkCollisions = function () {
     if (player.x + 14 === this.x && player.y + 34 === this.y) {
       score += 50;
@@ -575,9 +679,7 @@ function createObjects() {
     }
   };
 
-  // Now instantiate your objects.
-  // Place all enemy objects in an array called allEnemies
-
+  // Instantiate objects.
   // Place the player object in a variable called player
   player = new Player(
     PLAYER_DATA.START_X,
@@ -587,8 +689,12 @@ function createObjects() {
     playerSpriteSrc
   );
 
+  // Place all enemy objects in an array called allEnemies
+  player.updateEnemies(ENEMY_DATA);
+
   // This listens for key presses and sends the keys to your
   // Player.handleInput() method. You don't need to modify this.
+  // Arrow control
   document.addEventListener("keyup", function (e) {
     const allowedKeys = {
       37: "left",
@@ -600,6 +706,7 @@ function createObjects() {
     player.handleInput(allowedKeys[e.keyCode]);
   });
 
+  // Mouse control
   document.addEventListener("click", function (e) {
     if (e.target.className === "canvas") {
       // We create the coordinates that we will transfer.
@@ -660,4 +767,55 @@ function countLevelScore(level) {
 // Random number
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
+}
+
+// Set enemy sprite
+function setEnemySprite(i) {
+  if (i % 2 === 0) {
+    return ENEMY_DATA.SPRITES[0];
+  } else {
+    return ENEMY_DATA.SPRITES[1];
+  }
+}
+
+// Set enemy speed
+function setEnemySpeed(i, level) {
+  if (level > 0 && level <= 5) {
+    if (i % 2 === 0) {
+      return gameSpeed;
+    } else {
+      return gameSpeed * -1;
+    }
+  } else if (level > 5 && level <= 10) {
+    if (i % 2 === 0) {
+      return gameSpeed / 2;
+    } else {
+      return (gameSpeed / 2) * -1;
+    }
+  } else if (level > 10 && level <= 15) {
+    if (i % 2 === 0) {
+      return gameSpeed / 3;
+    } else {
+      return (gameSpeed / 3) * -1;
+    }
+  } else if (level > 15 && level <= 20) {
+    if (i % 2 === 0) {
+      return gameSpeed / 4;
+    } else {
+      return (gameSpeed / 4) * -1;
+    }
+  }
+}
+
+// Set enemy line Y
+function setEnemiesLines(level) {
+  if (level > 0 && level <= 5) {
+    return 0;
+  } else if (level > 5 && level <= 10) {
+    return 1;
+  } else if (level > 10 && level <= 15) {
+    return 2;
+  } else {
+    return 3;
+  }
 }
