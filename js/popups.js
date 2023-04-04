@@ -5,9 +5,12 @@ const RELOAD_TIMING = 5000;
 
 // Infobar variables
 const TEXT_ARR = {
-  SCORE: "score",
-  LEVEL: "level",
-  MAX_LEVEL: "max level",
+  TEXTS: ["score", "level", "max level"],
+  CLASSES: ["info-bar__score", "info-bar__level", "info-bar__max-level"],
+};
+
+const HEART_INFO = {
+  HEART_CLASS: "info-bar__heart",
   HEART_SRC: "images/heart–mini.png",
 };
 
@@ -53,58 +56,29 @@ function showInfoBar() {
   document.querySelector(".wrap").append(infoBarBox);
 
   // Create elements
-  for (let i = 0; i <= 3; i += 1) {
-    let infoBarItem = document.createElement("li");
-    if (i === 0) {
-      infoBarItem.setAttribute("class", "info-bar__imgs");
-      for (let i = 1; i <= life; i += 1) {
-        let heart = document.createElement("img");
-        heart.setAttribute("class", "info-bar__heart");
-        heart.setAttribute("src", `${TEXT_ARR.HEART_SRC}`);
-        infoBarItem.append(heart);
-      }
-      document.querySelector(".info-bar__box").append(infoBarItem);
-    } else if (i > 0 && i <= 3) {
-      infoBarItem.setAttribute("class", "info-bar__text");
-      if (i === 1) {
-        infoBarItem.insertAdjacentHTML(
-          "afterbegin",
-          `${TEXT_ARR.SCORE}:<span class="info-bar__score">${score}</span>`
-        );
-      } else if (i === 2) {
-        infoBarItem.insertAdjacentHTML(
-          "afterbegin",
-          `${TEXT_ARR.LEVEL}:<span class="info-bar__level">${level}</span>`
-        );
-      } else {
-        infoBarItem.insertAdjacentHTML(
-          "afterbegin",
-          `${TEXT_ARR.MAX_LEVEL}:<span class="info-bar__max-level">${maxLevel}</span>`
-        );
-      }
-      document.querySelector(".info-bar__box").append(infoBarItem);
-    }
-  }
+  // Сalculate and create the required number of hearts.
+  createHearts(HEART_INFO.HEART_SRC, HEART_INFO.HEART_CLASS, life);
+  // Calculate and create text lines showing level, max level and score.
+  createTextLines(TEXT_ARR);
 }
 
 // Finish game popup
 function finishGame() {
   // We remove the playing field and info bar.
-  let wrap = document.querySelector(".wrap");
-  wrap.removeChild(wrap.lastChild);
-  wrap.removeChild(wrap.lastChild);
+  deleteWrapElement("lastChild");
+  deleteWrapElement("lastChild");
 
   // Create a container
-  let startMenu = document.createElement("div");
+  const startMenu = document.createElement("div");
   startMenu.setAttribute("class", "start-menu");
   document.querySelector(".wrap").append(startMenu);
 
-  let startMenuBox = document.createElement("div");
+  const startMenuBox = document.createElement("div");
   startMenuBox.setAttribute("class", "start-menu__box");
   document.querySelector(".start-menu").prepend(startMenuBox);
 
   // Сreate a title.
-  let menuTitle = document.createElement("h2");
+  const menuTitle = document.createElement("h2");
   menuTitle.setAttribute("class", "menu__title");
   if (life) {
     menuTitle.insertAdjacentHTML("afterbegin", "You won! Game Over!");
@@ -114,17 +88,17 @@ function finishGame() {
   document.querySelector(".start-menu__box").prepend(menuTitle);
 
   // Сreate character images.
-  let menuImgs = document.createElement("div");
+  const menuImgs = document.createElement("div");
   menuImgs.setAttribute("class", "menu__characters");
   document.querySelector(".start-menu__box").append(menuImgs);
 
-  let characterImg = document.createElement("img");
+  const characterImg = document.createElement("img");
   characterImg.setAttribute("class", "menu__finish-img");
   characterImg.setAttribute("src", `${playerSpriteSrc}`);
   menuImgs.append(characterImg);
 
   // Сreate a score title.
-  let scoreTitle = document.createElement("h2");
+  const scoreTitle = document.createElement("h2");
   scoreTitle.setAttribute("class", "menu__score");
   scoreTitle.insertAdjacentHTML("afterbegin", `Your score: ${score}`);
   document.querySelector(".start-menu__box").append(scoreTitle);
