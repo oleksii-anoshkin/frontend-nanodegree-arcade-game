@@ -14,72 +14,64 @@
  */
 
 // Global variables
-const CANVAS_WIDTH = 501;
-const CANVAS_HEIGHT = [600, 1050, 1380];
+const COL_WIDTH = 100;
+const ROW_HEIGHT = 82;
+const NUM_COLS = 5;
+const NUM_ROWS = [6, 10, 14];
+const HEIGHT_CORRECTION = 4;
+const CANVAS_WIDTH = COL_WIDTH * NUM_COLS;
+const CANVAS_HEIGHT = NUM_ROWS.map(
+  (item) => item * ROW_HEIGHT + (item * ROW_HEIGHT) / HEIGHT_CORRECTION
+);
 
 // Levels data
-const LEVEL_DATA = {
-  FIRST_LEVEL: {
-    ROW_IMAGES: [
-      "images/water-block.png",
-      "images/stone-block.png",
-      "images/stone-block.png",
-      "images/stone-block.png",
-      "images/grass-block.png",
-      "images/grass-block.png",
-    ],
-    NUM_ROWS: 6,
-    NUM_COLS: 5,
-  },
-  SIXTH_LEVEL: {
-    ROW_IMAGES: [
-      "images/water-block.png",
-      "images/stone-block.png",
-      "images/stone-block.png",
-      "images/stone-block.png",
-      "images/stone-block.png",
-      "images/grass-block.png",
-    ],
-    NUM_ROWS: 6,
-    NUM_COLS: 5,
-  },
-  ELEVENTH_LEVEL: {
-    ROW_IMAGES: [
-      "images/water-block.png",
-      "images/stone-block.png",
-      "images/stone-block.png",
-      "images/stone-block.png",
-      "images/grass-block.png",
-      "images/stone-block.png",
-      "images/stone-block.png",
-      "images/stone-block.png",
-      "images/stone-block.png",
-      "images/grass-block.png",
-    ],
-    NUM_ROWS: 10,
-    NUM_COLS: 5,
-  },
-  SIXTEENTH_LEVEL: {
-    ROW_IMAGES: [
-      "images/water-block.png",
-      "images/stone-block.png",
-      "images/stone-block.png",
-      "images/stone-block.png",
-      "images/grass-block.png",
-      "images/stone-block.png",
-      "images/stone-block.png",
-      "images/stone-block.png",
-      "images/grass-block.png",
-      "images/stone-block.png",
-      "images/stone-block.png",
-      "images/stone-block.png",
-      "images/stone-block.png",
-      "images/grass-block.png",
-    ],
-    NUM_ROWS: 14,
-    NUM_COLS: 5,
-  },
-};
+const FIRST_LEVEL_IMAGES = [
+  "images/water-block.png",
+  "images/stone-block.png",
+  "images/stone-block.png",
+  "images/stone-block.png",
+  "images/grass-block.png",
+  "images/grass-block.png",
+];
+
+const SIXTH_LEVEL_IMAGES = [
+  "images/water-block.png",
+  "images/stone-block.png",
+  "images/stone-block.png",
+  "images/stone-block.png",
+  "images/stone-block.png",
+  "images/grass-block.png",
+];
+
+const ELEVENTH_LEVEL_IMAGES = [
+  "images/water-block.png",
+  "images/stone-block.png",
+  "images/stone-block.png",
+  "images/stone-block.png",
+  "images/grass-block.png",
+  "images/stone-block.png",
+  "images/stone-block.png",
+  "images/stone-block.png",
+  "images/stone-block.png",
+  "images/grass-block.png",
+];
+
+const SIXTEENTH_LEVEL_IMAGES = [
+  "images/water-block.png",
+  "images/stone-block.png",
+  "images/stone-block.png",
+  "images/stone-block.png",
+  "images/grass-block.png",
+  "images/stone-block.png",
+  "images/stone-block.png",
+  "images/stone-block.png",
+  "images/grass-block.png",
+  "images/stone-block.png",
+  "images/stone-block.png",
+  "images/stone-block.png",
+  "images/stone-block.png",
+  "images/grass-block.png",
+];
 
 // Engine code
 var Engine = function (global) {
@@ -186,27 +178,23 @@ var Engine = function (global) {
     // Engine variables
     let rowImages;
     let numRows;
-    let numCols;
+    let numCols = NUM_COLS;
     let row;
     let col;
 
     // Levels constructor
     if (level > 0 && level <= 5) {
-      rowImages = LEVEL_DATA.FIRST_LEVEL.ROW_IMAGES;
-      numRows = LEVEL_DATA.FIRST_LEVEL.NUM_ROWS;
-      numCols = LEVEL_DATA.FIRST_LEVEL.NUM_COLS;
+      rowImages = FIRST_LEVEL_IMAGES;
+      numRows = NUM_ROWS[0];
     } else if (level >= 6 && level <= 10) {
-      rowImages = LEVEL_DATA.SIXTH_LEVEL.ROW_IMAGES;
-      numRows = LEVEL_DATA.SIXTH_LEVEL.NUM_ROWS;
-      numCols = LEVEL_DATA.SIXTH_LEVEL.NUM_COLS;
+      rowImages = SIXTH_LEVEL_IMAGES;
+      numRows = NUM_ROWS[0];
     } else if (level >= 11 && level <= 15) {
-      rowImages = LEVEL_DATA.ELEVENTH_LEVEL.ROW_IMAGES;
-      numRows = LEVEL_DATA.ELEVENTH_LEVEL.NUM_ROWS;
-      numCols = LEVEL_DATA.ELEVENTH_LEVEL.NUM_COLS;
+      rowImages = ELEVENTH_LEVEL_IMAGES;
+      numRows = NUM_ROWS[1];
     } else {
-      rowImages = LEVEL_DATA.SIXTEENTH_LEVEL.ROW_IMAGES;
-      numRows = LEVEL_DATA.SIXTEENTH_LEVEL.NUM_ROWS;
-      numCols = LEVEL_DATA.SIXTEENTH_LEVEL.NUM_COLS;
+      rowImages = SIXTEENTH_LEVEL_IMAGES;
+      numRows = NUM_ROWS[2];
     }
 
     // Setting width
@@ -235,7 +223,11 @@ var Engine = function (global) {
          * so that we get the benefits of caching these images, since
          * we're using them over and over.
          */
-        ctx.drawImage(Resources.get(rowImages[row]), col * 100, row * 82);
+        ctx.drawImage(
+          Resources.get(rowImages[row]),
+          col * COL_WIDTH,
+          row * ROW_HEIGHT
+        );
       }
     }
 
