@@ -126,7 +126,7 @@ function createObjects() {
         player.updateHeart(HEART_DATA);
         player.updateEnemies(ENEMY_DATA);
 
-        infoBar();
+        showInfoBar();
       } else {
         // Game over if the character has too few lives.
         life -= 1;
@@ -140,7 +140,7 @@ function createObjects() {
           player.y = PLAYER_DATA.START_Y[2];
         }
 
-        infoBar();
+        showInfoBar();
         gameOverPopup();
         setTimeout(() => {
           finishGame();
@@ -195,7 +195,7 @@ function createObjects() {
         // Ending the game after passing the 20th level.
         if (level === 20) {
           score += 100;
-          infoBar();
+          showInfoBar();
           winPopup();
           setTimeout(() => {
             finishGame();
@@ -225,7 +225,7 @@ function createObjects() {
             this.updateHeart(HEART_DATA);
             this.updateEnemies(ENEMY_DATA);
 
-            infoBar();
+            showInfoBar();
           }, 400);
 
           // We scroll down the page when the height of the screen is too high.
@@ -279,7 +279,7 @@ function createObjects() {
         if (level === 20) {
           // Ending the game after passing the 20th level.
           score += 100;
-          infoBar();
+          showInfoBar();
           winPopup();
           setTimeout(() => {
             finishGame();
@@ -309,7 +309,7 @@ function createObjects() {
             this.updateHeart(HEART_DATA);
             this.updateEnemies(ENEMY_DATA);
 
-            infoBar();
+            showInfoBar();
           }, 400);
 
           // We scroll down the page when the height of the screen is too high.
@@ -623,13 +623,13 @@ function createObjects() {
         this.sprite === JEWELRY_DATA.SPRITES[2]
       ) {
         score += 40;
-        infoBar();
+        showInfoBar();
       } else if (this.sprite === JEWELRY_DATA.SPRITES[3]) {
         score += 80;
-        infoBar();
+        showInfoBar();
       } else if (this.sprite === JEWELRY_DATA.SPRITES[4]) {
         score += 135;
-        infoBar();
+        showInfoBar();
       }
       this.width = 0;
       this.height = 0;
@@ -670,7 +670,7 @@ function createObjects() {
       if (life < maxLife) {
         life += 1;
       }
-      infoBar();
+      showInfoBar();
 
       this.width = 0;
       this.height = 0;

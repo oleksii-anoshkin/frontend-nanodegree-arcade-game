@@ -1,65 +1,54 @@
+// Timings variables
+const SHORT_CLOSE_TIMING = 800;
+const MEDIUM_CLOSE_TIMING = 1500;
+const RELOAD_TIMING = 5000;
+
+// Infobar variables
+const TEXT_ARR = {
+  SCORE: "score",
+  LEVEL: "level",
+  MAX_LEVEL: "max level",
+  HEART_SRC: "images/heart–mini.png",
+};
+
 // Level up popup
 function levelUpPopup() {
   // Create a popup container
-  let levelUpPopup = document.createElement("div");
+  const levelUpPopup = document.createElement("div");
   levelUpPopup.setAttribute("class", "level-up");
   document.querySelector(".wrap").prepend(levelUpPopup);
-
-  // Delete after animation
-  setTimeout(() => {
-    let wrap = document.querySelector(".wrap");
-    wrap.removeChild(wrap.firstChild);
-  }, 800);
+  deletePopupAnimation(SHORT_CLOSE_TIMING, "firstChild");
 }
 
 // Win popup
 function winPopup() {
   // Create a popup container
-  let winPopup = document.createElement("div");
+  const winPopup = document.createElement("div");
   winPopup.setAttribute("class", "win");
   document.querySelector(".wrap").prepend(winPopup);
-
-  // Delete after animation
-  setTimeout(() => {
-    let wrap = document.querySelector(".wrap");
-    wrap.removeChild(wrap.firstChild);
-  }, 1500);
+  deletePopupAnimation(MEDIUM_CLOSE_TIMING, "firstChild");
 }
 
 // Game over popup
 function gameOverPopup() {
   // Create a popup container
-  let gameOverPopup = document.createElement("div");
+  const gameOverPopup = document.createElement("div");
   gameOverPopup.setAttribute("class", "game-over");
   document.querySelector(".wrap").prepend(gameOverPopup);
-
-  // Delete after animation
-  setTimeout(() => {
-    let wrap = document.querySelector(".wrap");
-    wrap.removeChild(wrap.firstChild);
-  }, 800);
+  deletePopupAnimation(SHORT_CLOSE_TIMING, "firstChild");
 }
 
 // Info bar
-function infoBar() {
-  // Variables
-  const TEXT_ARR = {
-    SCORE: "score",
-    LEVEL: "level",
-    MAX_LEVEL: "max level",
-    HEART_SRC: "images/heart–mini.png",
-  };
-
+function showInfoBar() {
   // Сheck the presence of the element on the page and delete it before creating a new instance.
-  let infoBar = document.getElementsByClassName("info-bar__box");
+  const infoBar = document.getElementsByClassName("info-bar__box");
 
-  if (infoBar.length !== 0) {
-    let wrap = document.querySelector(".wrap");
-    wrap.removeChild(wrap.lastChild);
+  if (infoBar.length) {
+    deleteWrapElement("lastChild");
   }
 
   // Create a container
-  let infoBarBox = document.createElement("ul");
+  const infoBarBox = document.createElement("ul");
   infoBarBox.setAttribute("class", "info-bar__box");
   document.querySelector(".wrap").append(infoBarBox);
 
@@ -142,5 +131,5 @@ function finishGame() {
 
   setTimeout(() => {
     location.reload();
-  }, 5000);
+  }, RELOAD_TIMING);
 }

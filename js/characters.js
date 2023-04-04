@@ -49,15 +49,6 @@ const PLAYER_SPRITES_SRC = [
   startBtn.insertAdjacentHTML("afterbegin", "Start the game");
   document.querySelector(".start-menu__box").append(startBtn);
 
-  // Character image selection function.
-  function setCharacter(e) {
-    const imgs = document.querySelectorAll(".menu__characters-img");
-
-    imgs.forEach((img) => img.classList.remove("set"));
-    e.target.className += " set";
-    playerSpriteSrc = e.target.getAttribute("src");
-  }
-
   // Add listeners
   document.addEventListener("click", function (e) {
     // Select character image.
@@ -66,11 +57,10 @@ const PLAYER_SPRITES_SRC = [
     }
     // React to pressing the button and starting the game.
     if (e.target.className.includes("menu__start-btn")) {
-      let wrap = document.querySelector(".wrap");
-      wrap.removeChild(wrap.firstChild);
+      deleteWrapElement("firstChild");
       createObjects();
       Engine(window);
-      infoBar();
+      showInfoBar();
     }
   });
 
@@ -84,11 +74,10 @@ const PLAYER_SPRITES_SRC = [
     }
     // React to pressing the button and starting the game.
     if (e.key === "Enter" && e.target.className.includes("menu__start-btn")) {
-      let wrap = document.querySelector(".wrap");
-      wrap.removeChild(wrap.firstChild);
+      deleteWrapElement("firstChild");
       createObjects();
       Engine(window);
-      infoBar();
+      showInfoBar();
     }
   });
 })();
