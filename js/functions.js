@@ -38,9 +38,7 @@ function createHearts(src, className, life) {
 }
 
 // Calculate and create text lines showing level, max level and score. // popups.js
-function createTextLines(obj) {
-  const values = [score, level, maxLevel];
-
+function createTextLines(obj, ...values) {
   for (let i = 0; i <= obj.TEXTS.length - 1; i += 1) {
     const infoBarItem = document.createElement("li");
     infoBarItem.setAttribute("class", "info-bar__text");

@@ -20,6 +20,7 @@ function levelUpPopup() {
   const levelUpPopup = document.createElement("div");
   levelUpPopup.setAttribute("class", "level-up");
   document.querySelector(".wrap").prepend(levelUpPopup);
+  // Close popup
   deletePopupAnimation(SHORT_CLOSE_TIMING, "firstChild");
 }
 
@@ -29,6 +30,7 @@ function winPopup() {
   const winPopup = document.createElement("div");
   winPopup.setAttribute("class", "win");
   document.querySelector(".wrap").prepend(winPopup);
+  // Close popup
   deletePopupAnimation(MEDIUM_CLOSE_TIMING, "firstChild");
 }
 
@@ -38,6 +40,7 @@ function gameOverPopup() {
   const gameOverPopup = document.createElement("div");
   gameOverPopup.setAttribute("class", "game-over");
   document.querySelector(".wrap").prepend(gameOverPopup);
+  // Close popup
   deletePopupAnimation(SHORT_CLOSE_TIMING, "firstChild");
 }
 
@@ -59,7 +62,7 @@ function showInfoBar() {
   // Сalculate and create the required number of hearts.
   createHearts(HEART_INFO.HEART_SRC, HEART_INFO.HEART_CLASS, life);
   // Calculate and create text lines showing level, max level and score.
-  createTextLines(TEXT_ARR);
+  createTextLines(TEXT_ARR, score, level, maxLevel);
 }
 
 // Finish game popup
@@ -81,6 +84,7 @@ function finishGame() {
   const menuTitle = document.createElement("h2");
   menuTitle.setAttribute("class", "menu__title");
   if (life) {
+    // If the character's lives are over and equal to 0, the game stops
     menuTitle.insertAdjacentHTML("afterbegin", "You won! Game Over!");
   } else {
     menuTitle.insertAdjacentHTML("afterbegin", "Game Over!");
@@ -103,6 +107,7 @@ function finishGame() {
   scoreTitle.insertAdjacentHTML("afterbegin", `Your score: ${score}`);
   document.querySelector(".start-menu__box").append(scoreTitle);
 
+  // We update the page after a while so that you can start a new game.
   setTimeout(() => {
     location.reload();
   }, RELOAD_TIMING);
