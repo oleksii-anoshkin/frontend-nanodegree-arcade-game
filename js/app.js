@@ -10,7 +10,7 @@ let maxLevel = 1;
 let life = 2;
 let maxLife = 4;
 let gameSpeed = 10;
-let playerSpriteSrc = "images/char-boy.png";
+let playerSpriteSrc = PLAYER_SPRITES_SRC[0];
 
 // Canvas variables
 const CANVAS_DATA = {

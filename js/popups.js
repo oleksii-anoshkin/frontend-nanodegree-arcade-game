@@ -117,7 +117,7 @@ function finishGame() {
   // Сreate a title.
   let menuTitle = document.createElement("h2");
   menuTitle.setAttribute("class", "menu__title");
-  if (life > 0) {
+  if (life) {
     menuTitle.insertAdjacentHTML("afterbegin", "You won! Game Over!");
   } else {
     menuTitle.insertAdjacentHTML("afterbegin", "Game Over!");
