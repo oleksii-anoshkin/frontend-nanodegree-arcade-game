@@ -1,14 +1,4 @@
 // -------------------------------------------------------------------
-// Popups variables
-POPUP_DATA = {
-  ELEM_TAG: "div",
-  ELEM_CLASS: ["level-up", "win", "game-over"],
-  PARENT_CLASS: "wrap",
-  ADD_METHOD: "prepend",
-  DELETE_METHOD: "firstChild",
-  TIMING: [MEDIUM_TIMING, HIGH_TIMING, MEDIUM_TIMING],
-};
-
 // Create class of popup with animation
 const PopupAnimation = function (
   elemTag,

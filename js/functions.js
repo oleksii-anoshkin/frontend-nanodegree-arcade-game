@@ -29,7 +29,6 @@ function deleteElement(parentClass, deleteMethod) {
   const parent = document.querySelector(`.${parentClass}`);
   parent.removeChild(parent[deleteMethod]);
 }
-// -------------------------------------------------------------------------
 
 // Other functions
 // Character image selection function. // characters.js
@@ -46,3 +45,4 @@ function deleteWrapElement(position) {
   const wrap = document.querySelector(".wrap");
   wrap.removeChild(wrap[position]);
 }
+// -------------------------------------------------------------------------

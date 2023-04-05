@@ -1,19 +1,4 @@
 // -------------------------------------------------------------------
-// Bar variables
-const BAR_DATA = {
-  ELEM_TAG: "ul",
-  ELEM_CLASS: "info-bar__box",
-  PARENT_CLASS: "wrap",
-  ADD_METHOD: "append",
-  DELETE_METHOD: "lastChild",
-  ITEM_TAG: "li",
-  ITEM_CLASS: "info-bar__imgs",
-  ITEM_TEXT_CLASS: "info-bar__text",
-  IMG_TAB: true,
-  TEXTS: ["score", "level", "max level"],
-  TEXTS_CLASSES: ["info-bar__score", "info-bar__level", "info-bar__max-level"],
-};
-
 // Create bar class
 const Bar = function (
   elemTag,
