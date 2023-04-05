@@ -141,7 +141,7 @@ function createObjects() {
         }
 
         showInfoBar();
-        gameOverPopup();
+        gameOverPopup.render();
         setTimeout(() => {
           finishGame();
         }, 800);
@@ -196,13 +196,13 @@ function createObjects() {
         if (level === 20) {
           score += 100;
           showInfoBar();
-          winPopup();
+          winPopup.render();
           setTimeout(() => {
             finishGame();
           }, 1500);
         } else {
           // Raise the level.
-          levelUpPopup();
+          levelUpPopup.render();
 
           setTimeout(() => {
             level++;
@@ -280,13 +280,13 @@ function createObjects() {
           // Ending the game after passing the 20th level.
           score += 100;
           showInfoBar();
-          winPopup();
+          winPopup.render();
           setTimeout(() => {
             finishGame();
           }, 1500);
         } else {
           // Raise the level.
-          levelUpPopup();
+          levelUpPopup.render();
 
           setTimeout(() => {
             level++;

@@ -11,9 +11,10 @@ const PLAYER_SPRITES_SRC = [
 // Choosing a character before starting the game.
 (function startMenu() {
   // Сreate a character selection window.
-  const startMenu = document.createElement("div");
-  startMenu.setAttribute("class", "start-menu");
-  document.querySelector(".wrap").prepend(startMenu);
+  createBoxElement("div", "start-menu", ".wrap", "prepend");
+  // const startMenu = document.createElement("div");
+  // startMenu.setAttribute("class", "start-menu");
+  // document.querySelector(".wrap").prepend(startMenu);
 
   const startMenuBox = document.createElement("div");
   startMenuBox.setAttribute("class", "start-menu__box");

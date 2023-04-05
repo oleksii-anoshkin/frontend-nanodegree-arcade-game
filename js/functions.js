@@ -14,14 +14,6 @@ function deleteWrapElement(position) {
   wrap.removeChild(wrap[position]);
 }
 
-// Delete popup animation // popups.js
-function deletePopupAnimation(timing, position) {
-  setTimeout(() => {
-    const wrap = document.querySelector(".wrap");
-    wrap.removeChild(wrap[position]);
-  }, timing);
-}
-
 // Сalculate and create the required number of hearts. // popups.js
 function createHearts(src, className, life) {
   const infoBarItem = document.createElement("li");
@@ -48,4 +40,20 @@ function createTextLines(obj, ...values) {
     );
     document.querySelector(".info-bar__box").append(infoBarItem);
   }
+}
+
+// -------------------------------------------------------------------------
+// HTML container creation function. // popups.js // characters.js
+function createBoxElement(elemTag, elemClass, parentClass, addMethod) {
+  const elem = document.createElement(elemTag);
+  elem.setAttribute("class", elemClass);
+  document.querySelector(parentClass)[addMethod](elem);
+}
+
+// Delete popup animation // popups.js
+function deletePopupAnimation(timing, deleteMethod, parentClass) {
+  setTimeout(() => {
+    const wrap = document.querySelector(parentClass);
+    wrap.removeChild(wrap[deleteMethod]);
+  }, timing);
 }

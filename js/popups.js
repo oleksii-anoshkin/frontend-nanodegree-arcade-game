@@ -1,8 +1,3 @@
-// Timings variables
-const SHORT_CLOSE_TIMING = 800;
-const MEDIUM_CLOSE_TIMING = 1500;
-const RELOAD_TIMING = 5000;
-
 // Infobar variables
 const TEXT_ARR = {
   TEXTS: ["score", "level", "max level"],
@@ -14,35 +9,66 @@ const HEART_INFO = {
   HEART_SRC: "images/heart–mini.png",
 };
 
-// Level up popup
-function levelUpPopup() {
-  // Create a popup container
-  const levelUpPopup = document.createElement("div");
-  levelUpPopup.setAttribute("class", "level-up");
-  document.querySelector(".wrap").prepend(levelUpPopup);
-  // Close popup
-  deletePopupAnimation(SHORT_CLOSE_TIMING, "firstChild");
-}
+// -------------------------------------------------------------------
+// Timings variables
+const LOW_TIMING = 400;
+const MEDIUM_TIMING = 800;
+const HIGH_TIMING = 1500;
+const RELOAD_TIMING = 5000;
 
-// Win popup
-function winPopup() {
-  // Create a popup container
-  const winPopup = document.createElement("div");
-  winPopup.setAttribute("class", "win");
-  document.querySelector(".wrap").prepend(winPopup);
-  // Close popup
-  deletePopupAnimation(MEDIUM_CLOSE_TIMING, "firstChild");
-}
+// Popups variables
+POPUP_DATA = {
+  ELEM_TAG: "div",
+  ELEM_CLASS: ["level-up", "win", "game-over"],
+  PARENT_CLASS: ".wrap",
+  ADD_METHOD: "prepend",
+  DELETE_METHOD: "firstChild",
+  TIMING: [MEDIUM_TIMING, HIGH_TIMING, MEDIUM_TIMING],
+};
 
-// Game over popup
-function gameOverPopup() {
-  // Create a popup container
-  const gameOverPopup = document.createElement("div");
-  gameOverPopup.setAttribute("class", "game-over");
-  document.querySelector(".wrap").prepend(gameOverPopup);
-  // Close popup
-  deletePopupAnimation(SHORT_CLOSE_TIMING, "firstChild");
-}
+// Create the popup class with animation
+const PopupAnimation = function (
+  elemTag,
+  elemClass,
+  parentClass,
+  addMethod,
+  deleteMethod,
+  timing
+) {
+  this.elemTag = elemTag;
+  this.elemClass = elemClass;
+  this.parentClass = parentClass;
+  this.addMethod = addMethod;
+  this.timing = timing;
+  this.deleteMethod = deleteMethod;
+};
+
+// Show popup with animation
+PopupAnimation.prototype.render = function () {
+  createBoxElement(
+    this.elemTag,
+    this.elemClass,
+    this.parentClass,
+    this.addMethod
+  );
+  deletePopupAnimation(this.timing, this.deleteMethod, this.parentClass);
+};
+
+// Creation of the necessary number of pop-up windows with animation.
+let counter = 0;
+[levelUpPopup, winPopup, gameOverPopup] = POPUP_DATA.ELEM_CLASS.map(
+  (elemClass) => {
+    return new PopupAnimation(
+      POPUP_DATA.ELEM_TAG,
+      elemClass,
+      POPUP_DATA.PARENT_CLASS,
+      POPUP_DATA.ADD_METHOD,
+      POPUP_DATA.DELETE_METHOD,
+      POPUP_DATA.TIMING[counter++]
+    );
+  }
+);
+// -------------------------------------------------------------------
 
 // Info bar
 function showInfoBar() {
