@@ -3,13 +3,13 @@
 POPUP_DATA = {
   ELEM_TAG: "div",
   ELEM_CLASS: ["level-up", "win", "game-over"],
-  PARENT_CLASS: ".wrap",
+  PARENT_CLASS: "wrap",
   ADD_METHOD: "prepend",
   DELETE_METHOD: "firstChild",
   TIMING: [MEDIUM_TIMING, HIGH_TIMING, MEDIUM_TIMING],
 };
 
-// Create the popups class with animation
+// Create class of popup with animation
 const PopupAnimation = function (
   elemTag,
   elemClass,
@@ -26,28 +26,17 @@ const PopupAnimation = function (
   this.deleteMethod = deleteMethod;
 };
 
-// Create popup animation element
-PopupAnimation.prototype.create = function () {
-  const elem = document.createElement(this.elemTag);
-  elem.setAttribute("class", this.elemClass);
-  document.querySelector(this.parentClass)[this.addMethod](elem);
-};
-
-// Delete popup animation element
-PopupAnimation.prototype.delete = function () {
+// Render popup with animation
+PopupAnimation.prototype.render = function () {
+  // Create popup with animation
+  createElement(this.elemTag, this.elemClass, this.parentClass, this.addMethod);
+  // Delete popup with animation
   setTimeout(() => {
-    const parent = document.querySelector(this.parentClass);
-    parent.removeChild(parent[this.deleteMethod]);
+    deleteElement(this.parentClass, this.deleteMethod);
   }, this.timing);
 };
 
-// Show popup with animation
-PopupAnimation.prototype.render = function () {
-  this.create();
-  this.delete();
-};
-
-// Creation of the necessary number of pop-up windows with animation.
+// Create all popup windows with animation
 let counter = 0;
 [levelUpPopup, winPopup, gameOverPopup] = POPUP_DATA.ELEM_CLASS.map(
   (elemClass) => {

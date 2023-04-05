@@ -11,10 +11,9 @@ const PLAYER_SPRITES_SRC = [
 // Choosing a character before starting the game.
 (function startMenu() {
   // Сreate a character selection window.
-  createBoxElement("div", "start-menu", ".wrap", "prepend");
-  // const startMenu = document.createElement("div");
-  // startMenu.setAttribute("class", "start-menu");
-  // document.querySelector(".wrap").prepend(startMenu);
+  const startMenu = document.createElement("div");
+  startMenu.setAttribute("class", "start-menu");
+  document.querySelector(".wrap").prepend(startMenu);
 
   const startMenuBox = document.createElement("div");
   startMenuBox.setAttribute("class", "start-menu__box");
@@ -61,7 +60,7 @@ const PLAYER_SPRITES_SRC = [
       deleteWrapElement("firstChild");
       createObjects();
       Engine(window);
-      showInfoBar();
+      bar.render();
     }
   });
 
@@ -78,7 +77,7 @@ const PLAYER_SPRITES_SRC = [
       deleteWrapElement("firstChild");
       createObjects();
       Engine(window);
-      showInfoBar();
+      bar.render();
     }
   });
 })();

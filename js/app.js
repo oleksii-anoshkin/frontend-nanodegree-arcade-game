@@ -51,14 +51,6 @@ const JEWELRY_DATA = {
   ],
 };
 
-// Heart variables
-const HEART_DATA = {
-  START_X: [10, 110, 210, 310, 410],
-  START_Y: [372, 700],
-  SPRITE_WIDTH: 52,
-  SPRITE_HEIGTH: 88,
-};
-
 // Enemy variables
 const ENEMY_DATA = {
   START_Y: [
@@ -126,7 +118,7 @@ function createObjects() {
         player.updateHeart(HEART_DATA);
         player.updateEnemies(ENEMY_DATA);
 
-        showInfoBar();
+        bar.render();
       } else {
         // Game over if the character has too few lives.
         life -= 1;
@@ -140,7 +132,7 @@ function createObjects() {
           player.y = PLAYER_DATA.START_Y[2];
         }
 
-        showInfoBar();
+        bar.render();
         gameOverPopup.render();
         setTimeout(() => {
           finishGame();
@@ -195,7 +187,7 @@ function createObjects() {
         // Ending the game after passing the 20th level.
         if (level === 20) {
           score += 100;
-          showInfoBar();
+          bar.render();
           winPopup.render();
           setTimeout(() => {
             finishGame();
@@ -225,7 +217,7 @@ function createObjects() {
             this.updateHeart(HEART_DATA);
             this.updateEnemies(ENEMY_DATA);
 
-            showInfoBar();
+            bar.render();
           }, 400);
 
           // We scroll down the page when the height of the screen is too high.
@@ -279,7 +271,7 @@ function createObjects() {
         if (level === 20) {
           // Ending the game after passing the 20th level.
           score += 100;
-          showInfoBar();
+          bar.render();
           winPopup.render();
           setTimeout(() => {
             finishGame();
@@ -309,7 +301,7 @@ function createObjects() {
             this.updateHeart(HEART_DATA);
             this.updateEnemies(ENEMY_DATA);
 
-            showInfoBar();
+            bar.render();
           }, 400);
 
           // We scroll down the page when the height of the screen is too high.
@@ -623,13 +615,13 @@ function createObjects() {
         this.sprite === JEWELRY_DATA.SPRITES[2]
       ) {
         score += 40;
-        showInfoBar();
+        bar.render();
       } else if (this.sprite === JEWELRY_DATA.SPRITES[3]) {
         score += 80;
-        showInfoBar();
+        bar.render();
       } else if (this.sprite === JEWELRY_DATA.SPRITES[4]) {
         score += 135;
-        showInfoBar();
+        bar.render();
       }
       this.width = 0;
       this.height = 0;
@@ -670,7 +662,7 @@ function createObjects() {
       if (life < maxLife) {
         life += 1;
       }
-      showInfoBar();
+      bar.render();
 
       this.width = 0;
       this.height = 0;
