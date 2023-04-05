@@ -49,11 +49,3 @@ function createBoxElement(elemTag, elemClass, parentClass, addMethod) {
   elem.setAttribute("class", elemClass);
   document.querySelector(parentClass)[addMethod](elem);
 }
-
-// Delete popup animation // popups.js
-function deletePopupAnimation(timing, deleteMethod, parentClass) {
-  setTimeout(() => {
-    const wrap = document.querySelector(parentClass);
-    wrap.removeChild(wrap[deleteMethod]);
-  }, timing);
-}
