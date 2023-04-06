@@ -8,7 +8,7 @@ let score = 0;
 let level = 1;
 let maxLevel = 1;
 let life = 2;
-let maxLife = 4;
+const MAX_LIFE = 4;
 let gameSpeed = 10;
 let playerSpriteSrc = PLAYER_SPRITES_SRC[0];
 
@@ -191,7 +191,7 @@ function createObjects() {
           winPopup.render();
           setTimeout(() => {
             finishGame(GAME_DATA);
-          }, 1500);
+          }, 1600);
         } else {
           // Raise the level.
           levelUpPopup.render();
@@ -659,7 +659,7 @@ function createObjects() {
   Heart.prototype.checkCollisions = function () {
     if (player.x + 14 === this.x && player.y + 34 === this.y) {
       score += 50;
-      if (life < maxLife) {
+      if (life < MAX_LIFE) {
         life += 1;
       }
       bar.render();

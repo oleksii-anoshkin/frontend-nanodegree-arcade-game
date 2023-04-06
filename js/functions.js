@@ -175,17 +175,33 @@ function finishGame(obj) {
 // Set value by level
 function setValue(arr, level) {
   switch (true) {
-    case level >= FIRST_STAGE.MIN_LEVEL && level <= SECOND_STAGE.MAX_LEVEL:
+    case level >= FIRST_STAGE.MIN_LEVEL && level <= FIRST_STAGE.MAX_LEVEL:
       return arr[0];
 
+    case level >= SECOND_STAGE.MIN_LEVEL && level <= SECOND_STAGE.MAX_LEVEL:
+      return arr.length === 4 ? arr[1] : arr[0];
+
     case level >= THIRD_STAGE.MIN_LEVEL && level <= THIRD_STAGE.MAX_LEVEL:
-      return arr[1];
+      return arr.length === 4 ? arr[2] : arr[1];
 
     case level >= FOURTH_STAGE.MIN_LEVEL && level <= FOURTH_STAGE.MAX_LEVEL:
-      return arr[2];
+      return arr.length === 4 ? arr[3] : arr[2];
   }
 }
 
 // Create images array for engine
-function createImagesArr() {} // !!!!!!!!!!!!
+function createImagesArr(positions, rows) {
+  let imgs = [];
+  imgs.push(LEVEL_IMAGES.WATER);
+
+  for (let i = 1; i < rows; i += 1) {
+    imgs.push(LEVEL_IMAGES.STONE);
+  }
+
+  for (let position of positions) {
+    imgs.splice(position, 1, LEVEL_IMAGES.GRASS);
+  }
+
+  return imgs;
+}
 // -------------------------------------------------------------------------

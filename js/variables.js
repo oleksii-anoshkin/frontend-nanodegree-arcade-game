@@ -99,7 +99,7 @@ const LEVEL_IMAGES = {
   WATER: "images/water-block.png",
   STONE: "images/stone-block.png",
   GRASS: "images/grass-block.png",
-  GRASS_POSITION: [[1, 2], [1], [1, 6], [1, 6, 10]],
+  GRASS_POSITION: [[4, 5], [5], [4, 9], [4, 8, 13]],
 };
 // -------------------------------------------------------------------------
 // Heart variables

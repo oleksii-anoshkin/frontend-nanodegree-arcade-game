@@ -64,7 +64,10 @@ var Engine = function (global) {
   /* This function initially draws the "game level", it will then
    * call the renderEntities function. */
   function render() {
-    rowImages = []; // !!!!!!!!!!!!
+    rowImages = createImagesArr(
+      setValue(LEVEL_IMAGES.GRASS_POSITION, level),
+      setValue(NUM_ROWS, level)
+    );
     numRows = setValue(NUM_ROWS, level);
     numCols = NUM_COLS;
     canvas.width = CANVAS_WIDTH;
