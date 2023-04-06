@@ -135,7 +135,7 @@ function createObjects() {
         bar.render();
         gameOverPopup.render();
         setTimeout(() => {
-          finishGame();
+          finishGame(GAME_DATA);
         }, 800);
       }
     }
@@ -190,7 +190,7 @@ function createObjects() {
           bar.render();
           winPopup.render();
           setTimeout(() => {
-            finishGame();
+            finishGame(GAME_DATA);
           }, 1500);
         } else {
           // Raise the level.
@@ -274,7 +274,7 @@ function createObjects() {
           bar.render();
           winPopup.render();
           setTimeout(() => {
-            finishGame();
+            finishGame(GAME_DATA);
           }, 1500);
         } else {
           // Raise the level.

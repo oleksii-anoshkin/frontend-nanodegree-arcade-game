@@ -1,228 +1,80 @@
-/* Engine.js
- * This file provides the game loop functionality (update entities and render),
- * draws the initial game board on the screen, and then calls the update and
- * render methods on your player and enemy objects (defined in your app.js).
- *
- * A game engine works by drawing the entire game screen over and over, kind of
- * like a flipbook you may have created as a kid. When your player moves across
- * the screen, it may look like just that image/character is moving or being
- * drawn but that is not the case. What's really happening is the entire "scene"
- * is being drawn over and over, presenting the illusion of animation.
- *
- * This engine makes the canvas' context (ctx) object globally available to make
- * writing app.js a little simpler to work with.
- */
-
-// Global variables
-const COL_WIDTH = 100;
-const ROW_HEIGHT = 82;
-const NUM_COLS = 5;
-const NUM_ROWS = [6, 10, 14];
-const HEIGHT_CORRECTION = 4;
-const CANVAS_WIDTH = COL_WIDTH * NUM_COLS;
-const CANVAS_HEIGHT = NUM_ROWS.map(
-  (item) => item * ROW_HEIGHT + (item * ROW_HEIGHT) / HEIGHT_CORRECTION
-);
-
-// Levels data
-const FIRST_LEVEL_IMAGES = [
-  "images/water-block.png",
-  "images/stone-block.png",
-  "images/stone-block.png",
-  "images/stone-block.png",
-  "images/grass-block.png",
-  "images/grass-block.png",
-];
-
-const SIXTH_LEVEL_IMAGES = [
-  "images/water-block.png",
-  "images/stone-block.png",
-  "images/stone-block.png",
-  "images/stone-block.png",
-  "images/stone-block.png",
-  "images/grass-block.png",
-];
-
-const ELEVENTH_LEVEL_IMAGES = [
-  "images/water-block.png",
-  "images/stone-block.png",
-  "images/stone-block.png",
-  "images/stone-block.png",
-  "images/grass-block.png",
-  "images/stone-block.png",
-  "images/stone-block.png",
-  "images/stone-block.png",
-  "images/stone-block.png",
-  "images/grass-block.png",
-];
-
-const SIXTEENTH_LEVEL_IMAGES = [
-  "images/water-block.png",
-  "images/stone-block.png",
-  "images/stone-block.png",
-  "images/stone-block.png",
-  "images/grass-block.png",
-  "images/stone-block.png",
-  "images/stone-block.png",
-  "images/stone-block.png",
-  "images/grass-block.png",
-  "images/stone-block.png",
-  "images/stone-block.png",
-  "images/stone-block.png",
-  "images/stone-block.png",
-  "images/grass-block.png",
-];
-
 // Engine code
 var Engine = function (global) {
   /* Predefine the variables we'll be using within this scope,
    * create the canvas element, grab the 2D context for that canvas
-   * set the canvas element's height/width and add it to the DOM.
-   */
+   * set the canvas element's height/width and add it to the DOM. */
   var doc = global.document,
     win = global.window,
     canvas = doc.createElement("canvas"),
     ctx = canvas.getContext("2d"),
-    lastTime;
+    lastTime,
+    rowImages,
+    numRows,
+    numCols,
+    row,
+    col;
 
   canvas.setAttribute("class", "canvas");
   doc.body.appendChild(canvas);
 
   /* This function serves as the kickoff point for the game loop itself
-   * and handles properly calling the update and render methods.
-   */
+   * and handles properly calling the update and render methods.*/
   function main() {
-    /* Get our time delta information which is required if your game
-     * requires smooth animation. Because everyone's computer processes
-     * instructions at different speeds we need a constant value that
-     * would be the same for everyone (regardless of how fast their
-     * computer is) - hurray time!
-     */
     var now = Date.now(),
       dt = (now - lastTime) / 1000.0;
 
-    /* Call our update/render functions, pass along the time delta to
-     * our update function since it may be used for smooth animation.
-     */
     update(dt);
     render();
 
-    /* Set our lastTime variable which is used to determine the time delta
-     * for the next time this function is called.
-     */
     lastTime = now;
 
-    /* Use the browser's requestAnimationFrame function to call this
-     * function again as soon as the browser is able to draw another frame.
-     */
     win.requestAnimationFrame(main);
   }
 
-  /* This function does some initial setup that should only occur once,
-   * particularly setting the lastTime variable that is required for the
-   * game loop.
-   */
+  /*This function does some initial setup that should only occur once,
+   * particularly setting the lastTime variable that is required for
+   * the game loop.*/
   function init() {
-    reset();
     lastTime = Date.now();
     main();
   }
 
-  /* This function is called by main (our game loop) and itself calls all
-   * of the functions which may need to update entity's data. Based on how
-   * you implement your collision detection (when two entities occupy the
-   * same space, for instance when your character should die), you may find
-   * the need to add an additional function call here. For now, we've left
-   * it commented out - you may or may not want to implement this
-   * functionality this way (you could just implement collision detection
-   * on the entities themselves within your app.js file).
-   */
+  /* This function is called by main (our game loop) and itself calls
+   * all of the functions which may need to update entity's data. */
   function update(dt) {
     updateEntities(dt);
-    // checkCollisions();
   }
 
-  /* This is called by the update function and loops through all of the
-   * objects within your allEnemies array as defined in app.js and calls
-   * their update() methods. It will then call the update function for your
-   * player object. These update methods should focus purely on updating
-   * the data/properties related to the object. Do your drawing in your
-   * render methods.
-   */
+  /* This is called by the update function and loops through all of
+   * the objects within your allEnemies array as defined in app.js
+   * and calls their update() methods. */
   function updateEntities(dt) {
     allEnemies.forEach(function (enemy) {
       enemy.update(dt);
     });
 
-    if (level >= 11 && level <= 20) {
+    if (level >= THIRD_STAGE.MIN_LEVEL && level <= FOURTH_STAGE.MAX_LEVEL) {
       jevel.update();
-      if (heart.x) {
-        heart.update();
-      }
+      if (heart.x) heart.update();
     }
 
     player.update();
   }
 
-  /* This function initially draws the "game level", it will then call
-   * the renderEntities function. Remember, this function is called every
-   * game tick (or loop of the game engine) because that's how games work -
-   * they are flipbooks creating the illusion of animation but in reality
-   * they are just drawing the entire screen over and over.
-   */
+  /* This function initially draws the "game level", it will then
+   * call the renderEntities function. */
   function render() {
-    /* This array holds the relative URL to the image used
-     * for that particular row of the game level.
-     */
-
-    // Engine variables
-    let rowImages;
-    let numRows;
-    let numCols = NUM_COLS;
-    let row;
-    let col;
-
-    // Levels constructor
-    if (level > 0 && level <= 5) {
-      rowImages = FIRST_LEVEL_IMAGES;
-      numRows = NUM_ROWS[0];
-    } else if (level >= 6 && level <= 10) {
-      rowImages = SIXTH_LEVEL_IMAGES;
-      numRows = NUM_ROWS[0];
-    } else if (level >= 11 && level <= 15) {
-      rowImages = ELEVENTH_LEVEL_IMAGES;
-      numRows = NUM_ROWS[1];
-    } else {
-      rowImages = SIXTEENTH_LEVEL_IMAGES;
-      numRows = NUM_ROWS[2];
-    }
-
-    // Setting width
+    rowImages = []; // !!!!!!!!!!!!
+    numRows = setValue(NUM_ROWS, level);
+    numCols = NUM_COLS;
     canvas.width = CANVAS_WIDTH;
-    if (level > 0 && level <= 10) {
-      canvas.height = CANVAS_HEIGHT[0];
-    } else if (level >= 11 && level <= 15) {
-      canvas.height = CANVAS_HEIGHT[1];
-    } else {
-      canvas.height = CANVAS_HEIGHT[2];
-    }
+    canvas.height = setValue(CANVAS_HEIGHT, level);
 
     // Before drawing, clear existing canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    /* Loop through the number of rows and columns we've defined above
-     * and, using the rowImages array, draw the correct image for that
-     * portion of the "grid"
-     */
     for (row = 0; row < numRows; row++) {
       for (col = 0; col < numCols; col++) {
-        /* The drawImage function of the canvas' context element
-         * requires 3 parameters: the image to draw, the x coordinate
-         * to start drawing and the y coordinate to start drawing.
-         * We're using our Resources helpers to refer to our images
-         * so that we get the benefits of caching these images, since
-         * we're using them over and over.
-         */
         ctx.drawImage(
           Resources.get(rowImages[row]),
           col * COL_WIDTH,
@@ -234,48 +86,33 @@ var Engine = function (global) {
     renderEntities();
   }
 
-  /* This function is called by the render function and is called on each game
-   * tick. Its purpose is to then call the render functions you have defined
-   * on your enemy and player entities within app.js
-   */
+  /* This function is called by the render function and is called
+   * on each game tick. */
   function renderEntities() {
-    /* Loop through all of the objects within the allEnemies array and call
-     * the render function you have defined.
-     */
     allEnemies.forEach(function (enemy) {
       enemy.render();
     });
 
-    if (level > 10 && level <= 15) {
-      allRocks[0].render();
-    } else if (level >= 15 && level <= 20) {
-      allRocks.forEach(function (enemy) {
-        enemy.render();
-      });
+    switch (true) {
+      case level >= THIRD_STAGE.MIN_LEVEL && level <= THIRD_STAGE.MAX_LEVEL:
+        allRocks[0].render();
+
+      case level >= FOURTH_STAGE.MIN_LEVEL && level <= FOURTH_STAGE.MAX_LEVEL:
+        allRocks.forEach(function (enemy) {
+          enemy.render();
+        });
     }
 
-    if (level > 10 && level <= 20) {
+    if (level >= THIRD_STAGE.MIN_LEVEL && level <= FOURTH_STAGE.MAX_LEVEL) {
       jevel.render();
-      if (heart.x) {
-        heart.render();
-      }
+      if (heart.x) heart.render();
     }
 
     player.render();
   }
 
-  /* This function does nothing but it could have been a good place to
-   * handle game reset states - maybe a new game menu or a game over screen
-   * those sorts of things. It's only called once by the init() method.
-   */
-  function reset() {
-    // noop
-  }
-
-  /* Go ahead and load all of the images we know we're going to need to
-   * draw our game level. Then set init as the callback method, so that when
-   * all of these images are properly loaded our game will start.
-   */
+  /* Go ahead and load all of the images we know we're going to
+   * need to draw our game level. */
   Resources.load([
     "images/stone-block.png",
     "images/water-block.png",
@@ -298,9 +135,7 @@ var Engine = function (global) {
   ]);
   Resources.onReady(init);
 
-  /* Assign the canvas' context object to the global variable (the window
-   * object when run in a browser) so that developers can use it more easily
-   * from within their app.js files.
-   */
+  /* Assign the canvas' context object to the global variable
+   * (the window bject when run in a browser). */
   global.ctx = ctx;
 };

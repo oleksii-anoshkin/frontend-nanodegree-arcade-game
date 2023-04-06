@@ -1,30 +1,38 @@
 // -------------------------------------------------------------------
 // Create bar class
 const Bar = function (
+  // General
   elemTag,
   elemClass,
   parentClass,
   addMethod,
   deleteMethod,
+  // Items
   itemTag,
   itemClass,
+  // Images
   imgClass,
   imgSrc,
   imgTab,
+  // Texts
   textClass,
   texts,
   textsClasses
 ) {
+  // General
   this.elemTag = elemTag;
   this.elemClass = elemClass;
   this.parentClass = parentClass;
   this.addMethod = addMethod;
   this.deleteMethod = deleteMethod;
+  // Items
   this.itemTag = itemTag;
   this.itemClass = itemClass;
+  // Images
   this.imgClass = imgClass;
   this.imgSrc = imgSrc;
   this.imgTab = imgTab;
+  // Texts
   this.textClass = textClass;
   this.texts = texts;
   this.textsClasses = textsClasses;
@@ -34,9 +42,7 @@ const Bar = function (
 Bar.prototype.check = function () {
   const elem = document.getElementsByClassName(this.elemClass);
 
-  if (elem.length) {
-    deleteElement(this.parentClass, this.deleteMethod);
-  }
+  if (elem.length) deleteElement(this.parentClass, this.deleteMethod);
 };
 
 // Сreate hearts
@@ -80,16 +86,20 @@ Bar.prototype.render = function () {
 
 // Create bar object
 const bar = new Bar(
+  // General
   BAR_DATA.ELEM_TAG,
   BAR_DATA.ELEM_CLASS,
   BAR_DATA.PARENT_CLASS,
   BAR_DATA.ADD_METHOD,
   BAR_DATA.DELETE_METHOD,
+  // Items
   BAR_DATA.ITEM_TAG,
   BAR_DATA.ITEM_CLASS,
+  // Images
   HEART_DATA.CLASS,
   HEART_DATA.SRC,
   BAR_DATA.IMG_TAB,
+  // Texts
   BAR_DATA.ITEM_TEXT_CLASS,
   BAR_DATA.TEXTS,
   BAR_DATA.TEXTS_CLASSES
