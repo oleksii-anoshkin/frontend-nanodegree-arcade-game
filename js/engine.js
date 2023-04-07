@@ -1,3 +1,4 @@
+// -------------------------------------------------------------------
 // Engine code
 var Engine = function (global) {
   /* Predefine the variables we'll be using within this scope,
@@ -57,8 +58,6 @@ var Engine = function (global) {
       jevel.update();
       if (heart.x) heart.update();
     }
-
-    player.update();
   }
 
   /* This function initially draws the "game level", it will then
@@ -99,11 +98,13 @@ var Engine = function (global) {
     switch (true) {
       case level >= THIRD_STAGE.MIN_LEVEL && level <= THIRD_STAGE.MAX_LEVEL:
         allRocks[0].render();
+        break;
 
       case level >= FOURTH_STAGE.MIN_LEVEL && level <= FOURTH_STAGE.MAX_LEVEL:
         allRocks.forEach(function (enemy) {
           enemy.render();
         });
+        break;
     }
 
     if (level >= THIRD_STAGE.MIN_LEVEL && level <= FOURTH_STAGE.MAX_LEVEL) {
@@ -142,3 +143,5 @@ var Engine = function (global) {
    * (the window bject when run in a browser). */
   global.ctx = ctx;
 };
+
+// -------------------------------------------------------------------

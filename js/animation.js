@@ -20,6 +20,7 @@ const PopupAnimation = function (
 PopupAnimation.prototype.render = function () {
   // Create popup with animation
   createElement(this.elemTag, this.elemClass, this.parentClass, this.addMethod);
+
   // Delete popup with animation
   setTimeout(() => {
     deleteElement(this.parentClass, this.deleteMethod);
@@ -40,4 +41,5 @@ let counter = 0;
     );
   }
 );
+
 // -------------------------------------------------------------------

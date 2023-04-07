@@ -1,10 +1,80 @@
 // -------------------------------------------------------------------------
+// Global variables
+const allEnemies = [];
+const allRocks = [];
+let jevel = {};
+let heart = {};
+let player = {};
+let score = 0;
+
 // Timings variables
 const LOW_TIMING = 400;
 const MEDIUM_TIMING = LOW_TIMING * 2; // 800
 const HIGH_TIMING = LOW_TIMING * 4; // 1600
 const RELOAD_TIMING = LOW_TIMING * 10; // 4000
 
+// Sprite variables
+const SPRITE_WIDTH = 100;
+const SPRITE_HEIGTH = 168;
+
+// Levels data
+let level = 1;
+let maxLevel = 1;
+const FIRST_STAGE = {
+  MIN_LEVEL: 1,
+  MAX_LEVEL: 5,
+};
+const SECOND_STAGE = {
+  MIN_LEVEL: 6,
+  MAX_LEVEL: 10,
+};
+const THIRD_STAGE = {
+  MIN_LEVEL: 11,
+  MAX_LEVEL: 15,
+};
+const FOURTH_STAGE = {
+  MIN_LEVEL: 16,
+  MAX_LEVEL: 20,
+};
+
+// Reset level data
+const RESET_LEVEL = [
+  FIRST_STAGE.MIN_LEVEL,
+  SECOND_STAGE.MIN_LEVEL,
+  THIRD_STAGE.MIN_LEVEL,
+  FOURTH_STAGE.MIN_LEVEL,
+];
+const LEVEL_BONUS = 10;
+const DATA_SCORE = [
+  LEVEL_BONUS,
+  LEVEL_BONUS * 2,
+  LEVEL_BONUS * 4,
+  LEVEL_BONUS * 8,
+];
+const RESET_SCORE = [
+  LEVEL_BONUS * 2,
+  LEVEL_BONUS * 4,
+  LEVEL_BONUS * 7,
+  LEVEL_BONUS * 10,
+];
+
+// Speed variables
+const START_GAME_SPEED = 10;
+const GAME_SPEED_STEP = 1;
+const RESET_SPEED = [
+  START_GAME_SPEED,
+  START_GAME_SPEED * 1.5,
+  START_GAME_SPEED * 2,
+  START_GAME_SPEED * 2.5,
+];
+let gameSpeed = START_GAME_SPEED;
+
+// Scroll data
+const SCROLL_CLAAS = "canvas";
+const SCROLL_BEHAVIOR = "smooth";
+const SCROLL_BLOCK = "end";
+
+// -------------------------------------------------------------------------
 // Popups animation variables
 const POPUP_DATA = {
   ELEM_TAG: "div",
@@ -12,7 +82,7 @@ const POPUP_DATA = {
   PARENT_CLASS: "wrap",
   ADD_METHOD: "prepend",
   DELETE_METHOD: "firstChild",
-  TIMING: [MEDIUM_TIMING, HIGH_TIMING, MEDIUM_TIMING],
+  TIMING: [MEDIUM_TIMING, HIGH_TIMING, MEDIUM_TIMING], // [800, 1600, 800]
 };
 
 // Bar variables
@@ -66,34 +136,19 @@ const GAME_DATA = {
     SCORE_TEXT: "Your score:",
   },
 };
-// -------------------------------------------------------------------------
-// Levels data
-const FIRST_STAGE = {
-  MIN_LEVEL: 1,
-  MAX_LEVEL: 5,
-};
-const SECOND_STAGE = {
-  MIN_LEVEL: 6,
-  MAX_LEVEL: 10,
-};
-const THIRD_STAGE = {
-  MIN_LEVEL: 11,
-  MAX_LEVEL: 15,
-};
-const FOURTH_STAGE = {
-  MIN_LEVEL: 16,
-  MAX_LEVEL: 20,
-};
 
+// -------------------------------------------------------------------------
 // Engine variables
-const COL_WIDTH = 100;
-const ROW_HEIGHT = 82;
+const COL_WIDTH = SPRITE_WIDTH; // 100
+const ROW_HEIGHT_CORRECTION = 2;
+const ROW_HEIGHT = SPRITE_HEIGTH / 2 - ROW_HEIGHT_CORRECTION; // 82
 const NUM_COLS = 5;
-const NUM_ROWS = [6, 6 + 4, 6 + 8];
-const HEIGHT_CORRECTION = 4;
-const CANVAS_WIDTH = COL_WIDTH * NUM_COLS;
+const BASIC_ROWS = 6;
+const NUM_ROWS = [BASIC_ROWS, BASIC_ROWS + 4, BASIC_ROWS + 8]; // [6, 10, 14]
+const CANVAS_HEIGHT_CORRECTION = 200;
+const CANVAS_WIDTH = COL_WIDTH * NUM_COLS; // 500
 const CANVAS_HEIGHT = NUM_ROWS.map(
-  (item) => item * ROW_HEIGHT + (item * ROW_HEIGHT) / HEIGHT_CORRECTION
+  (item) => item * ROW_HEIGHT + CANVAS_HEIGHT_CORRECTION
 );
 const LEVEL_IMAGES = {
   WATER: "images/water-block.png",
@@ -101,14 +156,105 @@ const LEVEL_IMAGES = {
   GRASS: "images/grass-block.png",
   GRASS_POSITION: [[4, 5], [5], [4, 9], [4, 8, 13]],
 };
+
 // -------------------------------------------------------------------------
-// Heart variables
-const HEART_DATA = {
-  START_X: [10, 110, 210, 310, 410], // !!!
-  START_Y: [372, 700], // !!!
-  SPRITE_WIDTH: 52, // !!!
-  SPRITE_HEIGTH: 88, // !!!
-  CLASS: "info-bar__heart",
-  SRC: "images/heart–mini.png",
+// Canvas variables
+const CANVAS_DATA = {
+  BORDER_BOT: [ROW_HEIGHT * 5, ROW_HEIGHT * 9, ROW_HEIGHT * 13],
+  BORDER_TOP: 0,
+  BORDER_LEFT: 0,
+  BORDER_RIGHT: COL_WIDTH * 4,
+  VERT_MOVE: ROW_HEIGHT,
+  HORZ_MOVE: COL_WIDTH,
 };
+const HIDDEN_SIZE = 0;
+const HIDDEN_POS = 100;
+
+// Player variables
+const PLAYER_DATA = {
+  START_Y: [ROW_HEIGHT * 5, ROW_HEIGHT * 9, ROW_HEIGHT * 13],
+  SPRITE_WIDTH: SPRITE_WIDTH,
+  SPRITE_HEIGTH: SPRITE_HEIGTH,
+};
+let playerSpriteSrc = PLAYER_SPRITES_SRC[0];
+
+// Enemy variables
+const ENEMY_SPEED = 10;
+const ENEMY_DATA = {
+  START_Y: [
+    [ROW_HEIGHT, ROW_HEIGHT * 2, ROW_HEIGHT * 3], // [82, 164, 246]
+    [ROW_HEIGHT, ROW_HEIGHT * 2, ROW_HEIGHT * 3, ROW_HEIGHT * 4], // [82, 164, 246, 328]
+    [
+      ROW_HEIGHT,
+      ROW_HEIGHT * 2,
+      ROW_HEIGHT * 3,
+      ROW_HEIGHT * 5,
+      ROW_HEIGHT * 6,
+      ROW_HEIGHT * 7,
+      ROW_HEIGHT * 8,
+    ], // [82, 164, 246, 410, 492, 574, 656]
+    [
+      ROW_HEIGHT,
+      ROW_HEIGHT * 2,
+      ROW_HEIGHT * 3,
+      ROW_HEIGHT * 5,
+      ROW_HEIGHT * 6,
+      ROW_HEIGHT * 7,
+      ROW_HEIGHT * 9,
+      ROW_HEIGHT * 10,
+      ROW_HEIGHT * 11,
+      ROW_HEIGHT * 12,
+    ], // [82, 164, 246, 410, 492, 574, 738, 820, 902, 984]
+  ],
+  SPRITE_WIDTH: SPRITE_WIDTH,
+  SPRITE_HEIGTH: SPRITE_HEIGTH,
+  SPRITES: ["images/enemy-bug-right.png", "images/enemy-bug-left.png"],
+};
+
+// Rocks variables
+const ROCKS_DATA = {
+  START_Y: [ROW_HEIGHT * 4, ROW_HEIGHT * 8], // [328, 656]\
+  SPRITE: "images/rock.png",
+  SPRITE_WIDTH: SPRITE_WIDTH,
+  SPRITE_HEIGTH: SPRITE_HEIGTH,
+};
+
+// Jewelry variables
+const JEWELRY_SCORE = LEVEL_BONUS * 4; // 40
+const JEWELRY_DATA = {
+  START_X: [0, COL_WIDTH, COL_WIDTH * 2, COL_WIDTH * 3, COL_WIDTH * 4], // [0, 100, 200, 300, 400]
+  START_Y: [ROW_HEIGHT * 4, ROW_HEIGHT * 8], // [328, 656]
+  SPRITE_WIDTH: SPRITE_WIDTH,
+  SPRITE_HEIGTH: SPRITE_HEIGTH,
+  SPRITES: [
+    "images/gem-blue.png",
+    "images/gem-green.png",
+    "images/gem-orange.png",
+    "images/key.png",
+    "images/star.png",
+  ],
+  SPRITES_SCORE: [
+    JEWELRY_SCORE,
+    JEWELRY_SCORE,
+    JEWELRY_SCORE,
+    JEWELRY_SCORE * 2,
+    JEWELRY_SCORE * 3,
+  ], // [40, 40, 40, 80, 120]
+};
+
+// Heart variables
+let life = 2;
+const MAX_LIFE = 4;
+const MIN_LIFE = 1;
+const HEART_SCORE = LEVEL_BONUS * 10; // 100
+const HEART_DATA = {
+  START_X: [0, COL_WIDTH, COL_WIDTH * 2, COL_WIDTH * 3, COL_WIDTH * 4], // [0, 100, 200, 300, 400]
+  START_Y: [ROW_HEIGHT * 4, ROW_HEIGHT * 8], // [328, 656]
+  SPRITE_WIDTH: SPRITE_WIDTH, // 100
+  SPRITE_HEIGTH: SPRITE_HEIGTH, // 168
+  CLASS: "info-bar__heart",
+  SRC_MINI: "images/heart–mini.png",
+  SRC: "images/heart.png",
+};
+
 // -------------------------------------------------------------------------

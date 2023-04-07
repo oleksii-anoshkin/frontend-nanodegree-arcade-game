@@ -75,11 +75,14 @@ Bar.prototype.renderTexts = function (...values) {
 Bar.prototype.render = function () {
   // Сheck the presence of the element on the page and delete it before creating a new instance
   this.check();
+
   // Create a bar container
   createElement(this.elemTag, this.elemClass, this.parentClass, this.addMethod);
+
   // Create bar elements
   // Сreate hearts
   this.renderHearts(life);
+
   // Create text lines that show score, level and max level
   this.renderTexts(score, level, maxLevel);
 };
@@ -97,11 +100,12 @@ const bar = new Bar(
   BAR_DATA.ITEM_CLASS,
   // Images
   HEART_DATA.CLASS,
-  HEART_DATA.SRC,
+  HEART_DATA.SRC_MINI,
   BAR_DATA.IMG_TAB,
   // Texts
   BAR_DATA.ITEM_TEXT_CLASS,
   BAR_DATA.TEXTS,
   BAR_DATA.TEXTS_CLASSES
 );
+
 // -------------------------------------------------------------------
