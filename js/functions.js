@@ -237,20 +237,14 @@ function hiddenObj(obj) {
 
 // Set enemy speed
 function setEnemySpeed(y) {
-  if ((y / ROW_HEIGHT) % 2 === 0) {
-    return ENEMY_SPEED;
-  } else {
-    return -ENEMY_SPEED;
-  }
+  return (y / ROW_HEIGHT) % 2 === 0 ? ENEMY_SPEED : -ENEMY_SPEED;
 }
 
 // Set enemy sprite
 function setEnemySprite(y) {
-  if ((y / ROW_HEIGHT) % 2 === 0) {
-    return ENEMY_DATA.SPRITES[0];
-  } else {
-    return ENEMY_DATA.SPRITES[1];
-  }
+  return (y / ROW_HEIGHT) % 2 === 0
+    ? ENEMY_DATA.SPRITES[0]
+    : ENEMY_DATA.SPRITES[1];
 }
 
 // Page scroll down
@@ -261,16 +255,55 @@ function scrollDown(elemClass, behavior, block) {
   });
 }
 
-// Check marge
-function checkMarge(obj, xPositions, arrForCheck) {
-  let arrX;
-  const margeObj = arrForCheck.find(
-    (item) => item.x === obj.x && item.y === obj.y
-  );
+// Create x positions for rocks
+function randomRockArrX(yPositions, xPositions) {
+  let basicX = [].concat(xPositions);
+  const arrX = yPositions.map(() => randomX());
 
-  Boolean(margeObj)
-    ? (arrX = xPositions.filter((x) => x !== margeObj.x))
-    : (arrX = false);
+  arrX.forEach((x) => {
+    for (let i = arrX.indexOf(x) + 1; i < arrX.length; i += 1) {
+      if (x === arrX[i]) {
+        basicX = basicX.filter((pos) => pos !== arrX[i]);
+        arrX[i] = randomPosition(basicX);
+      }
+    }
+    basicX = basicX.filter((pos) => pos !== x);
+  });
+
+  return arrX;
+}
+
+// Create x positions for rocks
+function RockArrX(yPositions, xPositions) {
+  let basicX = [].concat(xPositions);
+  const arrX = yPositions.map(() => randomX());
+
+  arrX.forEach((x) => {
+    for (let i = arrX.indexOf(x) + 1; i < arrX.length; i += 1) {
+      if (x === arrX[i]) {
+        basicX = basicX.filter((pos) => pos !== arrX[i]);
+        arrX[i] = randomPosition(basicX);
+      }
+    }
+    basicX = basicX.filter((pos) => pos !== x);
+  });
+
+  return arrX;
+}
+
+// Create x positions for heart and jevel
+function ArrX(rocks, jevel, basicPositions) {
+  const xPositions = rocks.map((rock) => rock.x);
+  if (jevel !== undefined) xPositions[xPositions.length] = jevel;
+  let arrX = [].concat(basicPositions);
+
+  basicPositions.forEach((x) =>
+    xPositions.forEach((objX) => {
+      if (objX === x) {
+        arrX = arrX.filter((pos) => pos !== objX);
+      }
+    })
+  );
 
   return arrX;
 }
@@ -285,5 +318,18 @@ function randomPosition(arrPositions) {
 // Random number
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
+}
+
+// Update objects
+function updateObjects(obj) {
+  obj.updateRocks(ROCKS_DATA);
+  obj.updateJewelry(JEWELRY_DATA);
+  obj.updateHeart(HEART_DATA);
+  obj.updateEnemies(ENEMY_DATA);
+}
+
+// Check and set max level
+function countMaxLevel(level) {
+  return level >= maxLevel ? level : maxLevel;
 }
 // -------------------------------------------------------------------------

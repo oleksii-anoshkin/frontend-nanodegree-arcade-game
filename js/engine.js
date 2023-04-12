@@ -95,19 +95,11 @@ var Engine = function (global) {
       enemy.render();
     });
 
-    switch (true) {
-      case level >= THIRD_STAGE.MIN_LEVEL && level <= THIRD_STAGE.MAX_LEVEL:
-        allRocks[0].render();
-        break;
-
-      case level >= FOURTH_STAGE.MIN_LEVEL && level <= FOURTH_STAGE.MAX_LEVEL:
-        allRocks.forEach(function (enemy) {
-          enemy.render();
-        });
-        break;
-    }
-
     if (level >= THIRD_STAGE.MIN_LEVEL && level <= FOURTH_STAGE.MAX_LEVEL) {
+      allRocks.forEach(function (rock) {
+        rock.render();
+      });
+
       jevel.render();
       if (heart.x) heart.render();
     }

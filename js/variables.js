@@ -20,6 +20,8 @@ const SPRITE_HEIGTH = 168;
 // Levels data
 let level = 1;
 let maxLevel = 1;
+const LEVEL_BONUS = 10;
+const FINISH_BONUS = LEVEL_BONUS * 10;
 const FIRST_STAGE = {
   MIN_LEVEL: 1,
   MAX_LEVEL: 5,
@@ -36,15 +38,6 @@ const FOURTH_STAGE = {
   MIN_LEVEL: 16,
   MAX_LEVEL: 20,
 };
-
-// Reset level data
-const RESET_LEVEL = [
-  FIRST_STAGE.MIN_LEVEL,
-  SECOND_STAGE.MIN_LEVEL,
-  THIRD_STAGE.MIN_LEVEL,
-  FOURTH_STAGE.MIN_LEVEL,
-];
-const LEVEL_BONUS = 10;
 const DATA_SCORE = [
   LEVEL_BONUS,
   LEVEL_BONUS * 2,
@@ -52,10 +45,24 @@ const DATA_SCORE = [
   LEVEL_BONUS * 8,
 ];
 const RESET_SCORE = [
+  LEVEL_BONUS * 3,
+  LEVEL_BONUS * 6,
+  LEVEL_BONUS * 9,
+  LEVEL_BONUS * 12,
+];
+const SCORE_LEVELS = [
+  LEVEL_BONUS,
   LEVEL_BONUS * 2,
+  LEVEL_BONUS * 3,
   LEVEL_BONUS * 4,
-  LEVEL_BONUS * 7,
-  LEVEL_BONUS * 10,
+];
+
+// Reset level data
+const RESET_LEVEL = [
+  FIRST_STAGE.MIN_LEVEL,
+  SECOND_STAGE.MIN_LEVEL,
+  THIRD_STAGE.MIN_LEVEL,
+  FOURTH_STAGE.MIN_LEVEL,
 ];
 
 // Speed variables
@@ -156,6 +163,7 @@ const LEVEL_IMAGES = {
   GRASS: "images/grass-block.png",
   GRASS_POSITION: [[4, 5], [5], [4, 9], [4, 8, 13]],
 };
+const BASIC_X = [0, COL_WIDTH, COL_WIDTH * 2, COL_WIDTH * 3, COL_WIDTH * 4];
 
 // -------------------------------------------------------------------------
 // Canvas variables
@@ -213,7 +221,8 @@ const ENEMY_DATA = {
 
 // Rocks variables
 const ROCKS_DATA = {
-  START_Y: [ROW_HEIGHT * 4, ROW_HEIGHT * 8], // [328, 656]\
+  START_X: BASIC_X, // [0, 100, 200, 300, 400]
+  START_Y: [ROW_HEIGHT * 4, ROW_HEIGHT * 8], // [328, 656]
   SPRITE: "images/rock.png",
   SPRITE_WIDTH: SPRITE_WIDTH,
   SPRITE_HEIGTH: SPRITE_HEIGTH,
@@ -222,7 +231,7 @@ const ROCKS_DATA = {
 // Jewelry variables
 const JEWELRY_SCORE = LEVEL_BONUS * 4; // 40
 const JEWELRY_DATA = {
-  START_X: [0, COL_WIDTH, COL_WIDTH * 2, COL_WIDTH * 3, COL_WIDTH * 4], // [0, 100, 200, 300, 400]
+  START_X: BASIC_X, // [0, 100, 200, 300, 400]
   START_Y: [ROW_HEIGHT * 4, ROW_HEIGHT * 8], // [328, 656]
   SPRITE_WIDTH: SPRITE_WIDTH,
   SPRITE_HEIGTH: SPRITE_HEIGTH,
@@ -248,7 +257,7 @@ const MAX_LIFE = 4;
 const MIN_LIFE = 1;
 const HEART_SCORE = LEVEL_BONUS * 10; // 100
 const HEART_DATA = {
-  START_X: [0, COL_WIDTH, COL_WIDTH * 2, COL_WIDTH * 3, COL_WIDTH * 4], // [0, 100, 200, 300, 400]
+  START_X: BASIC_X, // [0, 100, 200, 300, 400]
   START_Y: [ROW_HEIGHT * 4, ROW_HEIGHT * 8], // [328, 656]
   SPRITE_WIDTH: SPRITE_WIDTH, // 100
   SPRITE_HEIGTH: SPRITE_HEIGTH, // 168
@@ -256,5 +265,11 @@ const HEART_DATA = {
   SRC_MINI: "images/heart–mini.png",
   SRC: "images/heart.png",
 };
+
+// -------------------------------------------------------------------------
+// Mouse control
+const CLICK_CLASS = "canvas";
+const CLICK_WIDTH = 540;
+const CLICK_MARGIN = 0.06;
 
 // -------------------------------------------------------------------------
